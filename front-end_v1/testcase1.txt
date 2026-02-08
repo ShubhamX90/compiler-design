@@ -1,0 +1,27 @@
+% Sample Test Case 1: Simple Function with Arithmetic
+% This program demonstrates basic function with input/output parameters
+
+_function1
+input parameter list [int b2, int c3cd]
+output parameter list [int d5, int c2d3];
+type int: b4d333;
+type int: c3ddd34;
+b4d333 <--- b2 + c3cd;
+c3ddd34 <--- b4d333 - 10;
+d5 <--- b4d333;
+c2d3 <--- c3ddd34;
+return [d5, c2d3];
+end
+
+_main
+type int: b4d333;
+type int: c3ddd34;
+type int: c2d3;
+type int: c2d4;
+read(b4d333);
+read(c3ddd34);
+[c2d3, c2d4] <--- call _function1 with parameters [b4d333, c3ddd34];
+write(c2d3);
+write(c2d4);
+return;
+end

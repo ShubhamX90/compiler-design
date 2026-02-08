@@ -1,0 +1,33 @@
+% Test Case 2: Conditionals and Loops
+% Demonstrates if-then-else and while loop
+
+_computeSum
+input parameter list [int b2, int c3]
+output parameter list [int d5];
+type int: b4;
+b4 <--- 0;
+if (b2 > c3)
+then
+    b4 <--- b2 + c3;
+else
+    b4 <--- b2 - c3;
+endif
+d5 <--- b4;
+return [d5];
+end
+
+_main
+type int: b2;
+type int: c3;
+type int: d5;
+type int: b7;
+b2 <--- 5;
+c3 <--- 1;
+b7 <--- 10;
+while (c3 <= b7)
+    [d5] <--- call _computeSum with parameters [b2, c3];
+    write(d5);
+    c3 <--- c3 + 1;
+endwhile
+return;
+end

@@ -1,0 +1,24 @@
+% Test Case 4: Error Cases
+% This file contains various lexical and syntax errors
+
+_testFunction
+input parameter list [int b2]
+output parameter list [int d5];
+type int: c3;
+c3 <- 5;        % Error: <- is incomplete assignment operator (should be <---)
+d5 <--- c3 + b2;
+return [d5];
+end
+
+_main
+type int: b2;
+type int: d5;
+b2 <--- 23.4;    % Error: 23.4 has only one digit after decimal (should be 23.40)
+[d5] <-- call _testFunction with parameters [b2];  % Error: <-- incomplete
+write(d5);
+if (b2 = 5)      % Error: single = (should be ==)
+then
+    write(b2);
+endif
+return;
+end
