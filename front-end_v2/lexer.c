@@ -178,7 +178,6 @@ tokenInfo getNextToken(twinBuffer *tb) {
               if (isDIG(c5)) {
                 char c6 = getNextChar(tb);
                 if (isDIG(c6)) {
-                  retract(tb, 1);
                   getLexeme(tb, token.lexeme);
                   token.tokenType = TK_RNUM;
                   token.value.realValue = atof(token.lexeme);
@@ -321,6 +320,13 @@ tokenInfo getNextToken(twinBuffer *tb) {
         token.lineNumber = startLine;
         return token;
       } else {
+        if (!isBD(c)){
+          retract(tb, 1);
+          getLexeme(tb, token.lexeme);
+          token.tokenType = lookupKeyword(token.lexeme);
+          token.lineNumber = startLine;
+          return token;
+        }
         while (isLOW(c))
           c = getNextChar(tb);
         if ((unsigned char)c != (unsigned char)EOF)
