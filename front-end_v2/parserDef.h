@@ -6,7 +6,7 @@
 #define MAX_RHS 15
 #define MAX_RULES 140
 #define MAX_FIRST_FOLLOW 45
-#define MAX_NT 60
+#define MAX_NT 75
 #define TABLE_TERMINALS 70
 
 typedef enum {

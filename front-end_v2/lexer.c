@@ -48,16 +48,12 @@ twinBuffer *initializeTwinBuffer(FILE *fp) {
   tb->eof1 = 0;
   tb->eof2 = 0;
   tb->lineNumber = 1;
+  tb->currentBuffer = 1;
   memset(tb->buffer, 0, sizeof(tb->buffer));
   size_t n = fread(tb->buffer, 1, BUFFER_SIZE, fp);
   if (n < BUFFER_SIZE) {
     tb->buffer[n] = (char)EOF;
     tb->eof1 = 1;
-  }
-  n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, fp);
-  if (n < BUFFER_SIZE) {
-    tb->buffer[BUFFER_SIZE + n] = (char)EOF;
-    tb->eof2 = 1;
   }
   return tb;
 }
@@ -70,22 +66,40 @@ char getNextChar(twinBuffer *tb) {
       return (char)EOF;
   }
   tb->forward++;
-  if (tb->forward == BUFFER_SIZE && !tb->eof1) {
-    size_t n = fread(tb->buffer, 1, BUFFER_SIZE, tb->fp);
-    if (n < BUFFER_SIZE) {
-      tb->buffer[n] = (char)EOF;
-      tb->eof1 = 1;
+  if (tb->forward == BUFFER_SIZE) {
+    if (tb->currentBuffer != 2) {
+      if (!tb->eof1) {
+        size_t n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, tb->fp);
+        if (n < BUFFER_SIZE) {
+          tb->buffer[BUFFER_SIZE + n] = (char)EOF;
+          tb->eof2 = 1;
+        } else {
+          tb->eof2 = 0;
+        }
+      } else {
+        tb->eof2 = 1;
+        tb->buffer[BUFFER_SIZE] = (char)EOF;
+      }
+      tb->currentBuffer = 2;
     }
   }
   else if (tb->forward == TWIN_BUFFER_SIZE) {
-    if (!tb->eof2) {
-      size_t n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, tb->fp);
-      if (n < BUFFER_SIZE) {
-        tb->buffer[BUFFER_SIZE + n] = (char)EOF;
-        tb->eof2 = 1;
-      }
-    }
     tb->forward = 0;
+    if (tb->currentBuffer != 1) {
+      if (!tb->eof2) {
+        size_t n = fread(tb->buffer, 1, BUFFER_SIZE, tb->fp);
+        if (n < BUFFER_SIZE) {
+          tb->buffer[n] = (char)EOF;
+          tb->eof1 = 1;
+        } else {
+          tb->eof1 = 0;
+        }
+      } else {
+        tb->eof1 = 1;
+        tb->buffer[0] = (char)EOF;
+      }
+      tb->currentBuffer = 1;
+    }
   }
   if (c == '\n')
     tb->lineNumber++;

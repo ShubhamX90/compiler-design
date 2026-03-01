@@ -1,9 +1,9 @@
 #include "parser.h"
+#include "lexer.h"
 #include "parserDef.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 const char *getNonTerminalName(NonTerminal nt) {
   switch (nt) {
@@ -118,7 +118,6 @@ const char *getNonTerminalName(NonTerminal nt) {
   }
 }
 
-
 static grammar *G_global;
 
 #define START_RULE(nt)                                                         \
@@ -146,7 +145,6 @@ static grammar *G_global;
   }                                                                            \
   while (0)
 #define EPS() T(TK_EPSILON)
-
 
 grammar *initializeGrammar(void) {
   grammar *G = (grammar *)malloc(sizeof(grammar));
@@ -904,7 +902,8 @@ static void addChild(parseTreeNode *parent, parseTreeNode *child) {
 static int isSyncToken(TokenType t) {
   return (t == TK_SEM || t == TK_ENDRECORD || t == TK_ENDUNION ||
           t == TK_ENDIF || t == TK_ENDWHILE || t == TK_ELSE || t == TK_CL ||
-          t == TK_SQR || t == TK_END || t == TK_EOF);
+          t == TK_SQR || t == TK_END || t == TK_EOF || t == TK_FUNID ||
+          t == TK_MAIN);
 }
 
 static tokenInfo nextMeaningfulToken(twinBuffer *tb, int *errorCount,
@@ -952,11 +951,10 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
 
   int errorCount = 0;
   int syntaxOK = 1;
+  int lastErrorLine = -1;
   tokenInfo cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
 
-  int lastErrorLine = -1;
-
-  while (stack != NULL && errorCount < 60) {
+  while (stack != NULL && errorCount < 10000) {
     stackNode *topNode = pop(&stack);
     GrammarSymbol X = topNode->symbol;
     parseTreeNode *tn = topNode->treeNode;
@@ -987,7 +985,7 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
         }
         cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
       } else {
-     
+
         if (cur.lineNumber != lastErrorLine) {
           fprintf(stderr,
                   "Line %d\tError: The token %s for lexeme %s  does not match "
@@ -997,6 +995,30 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
           lastErrorLine = cur.lineNumber;
           errorCount++;
           syntaxOK = 0;
+        }
+
+        /* FIX 1: After terminal mismatch, if the current token is
+           TK_FUNID, TK_MAIN, or TK_END, unwind the stack so parsing
+           resumes at the next function or function-closing end. */
+        if (cur.tokenType == TK_FUNID || cur.tokenType == TK_MAIN ||
+            cur.tokenType == TK_END) {
+          while (stack != NULL) {
+            stackNode *peek = stack;
+            GrammarSymbol peekSym = peek->symbol;
+            if (peekSym.type == SYMBOL_TERMINAL &&
+                peekSym.symbol.terminal == cur.tokenType) {
+              break;
+            }
+            if (peekSym.type == SYMBOL_NON_TERMINAL) {
+              int idx = (int)cur.tokenType;
+              if (idx >= 0 && idx < TABLE_TERMINALS &&
+                  T->entries[peekSym.symbol.nonTerminal][idx].isValid) {
+                break;
+              }
+            }
+            stackNode *discard = pop(&stack);
+            free(discard);
+          }
         }
       }
     } else {
@@ -1024,15 +1046,84 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
                   "Line %d\tError: Invalid token %s encountered with value %s "
                   "stack top %s\n",
                   cur.lineNumber, getTokenName(a), cur.lexeme,
-                  getNonTerminalName(A) + 1); 
+                  getNonTerminalName(A) + 1);
           lastErrorLine = cur.lineNumber;
           errorCount++;
           syntaxOK = 0;
         }
 
-        if (!isSyncToken(cur.tokenType)) {
+        /* FIX 1: Enhanced panic-mode recovery.
+           Skip tokens until we find a sync token that is actually
+           usable by something on the parse stack (a matching terminal
+           or a NT with a valid parse table entry). If we land on
+           TK_FUNID or TK_MAIN, unwind the stack to a NT that can
+           handle it so parsing resumes at the next function boundary. */
+        {
+          /* Find a sync token */
           while (cur.tokenType != TK_EOF && !isSyncToken(cur.tokenType)) {
             cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
+          }
+
+          /* Check if ANY item on the stack can use this sync token.
+             If not, keep skipping until we find one that can, or
+             until we hit TK_FUNID, TK_MAIN, or TK_EOF. */
+          while (cur.tokenType != TK_EOF && cur.tokenType != TK_FUNID &&
+                 cur.tokenType != TK_MAIN) {
+            /* Scan the stack for a match */
+            int usable = 0;
+            stackNode *sc = stack;
+            while (sc != NULL) {
+              if (sc->symbol.type == SYMBOL_TERMINAL &&
+                  sc->symbol.symbol.terminal == cur.tokenType) {
+                usable = 1;
+                break;
+              }
+              if (sc->symbol.type == SYMBOL_NON_TERMINAL) {
+                int idx = (int)cur.tokenType;
+                if (idx >= 0 && idx < TABLE_TERMINALS &&
+                    T->entries[sc->symbol.symbol.nonTerminal][idx].isValid) {
+                  usable = 1;
+                  break;
+                }
+              }
+              sc = sc->next;
+            }
+            if (usable)
+              break; /* this sync token matches something on the stack */
+
+            /* Not usable — skip past it and find the next sync token */
+            cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
+            while (cur.tokenType != TK_EOF && !isSyncToken(cur.tokenType)) {
+              cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
+            }
+          }
+
+          /* If we landed on TK_FUNID, TK_MAIN, or TK_END, unwind the
+             stack so the token can be consumed cleanly.  For TK_END
+             we look for a matching TK_END terminal on the stack (the
+             function-closing `end`).  For TK_FUNID/TK_MAIN we look
+             for a NT with a valid parse table entry. */
+          if (cur.tokenType == TK_FUNID || cur.tokenType == TK_MAIN ||
+              cur.tokenType == TK_END) {
+            while (stack != NULL) {
+              stackNode *peek = stack;
+              GrammarSymbol peekSym = peek->symbol;
+              /* Match a terminal on the stack */
+              if (peekSym.type == SYMBOL_TERMINAL &&
+                  peekSym.symbol.terminal == cur.tokenType) {
+                break;
+              }
+              /* Match a NT with a valid parse table entry */
+              if (peekSym.type == SYMBOL_NON_TERMINAL) {
+                int idx = (int)cur.tokenType;
+                if (idx >= 0 && idx < TABLE_TERMINALS &&
+                    T->entries[peekSym.symbol.nonTerminal][idx].isValid) {
+                  break;
+                }
+              }
+              stackNode *discard = pop(&stack);
+              free(discard);
+            }
           }
         }
       }
@@ -1077,23 +1168,38 @@ static void printInorder(parseTreeNode *node, FILE *fp) {
   }
 
   if (node->isLeaf || node->childCount == 0) {
-    char valueStr[32];
-    if (node->token.tokenType == TK_NUM && node->token.hasValue)
-      snprintf(valueStr, sizeof(valueStr), "%d", node->token.value.intValue);
-    else if (node->token.tokenType == TK_RNUM && node->token.hasValue)
-      snprintf(valueStr, sizeof(valueStr), "%.2f", node->token.value.realValue);
-    else
-      strcpy(valueStr, "----");
+    /* FIX 5: Detect epsilon / unmatched leaf nodes.
+       Case 1: Genuine epsilon nodes (grammar symbol is TK_EPSILON).
+       Case 2: Unmatched terminals from error recovery — these have
+       zero-initialized token data (tokenType == TK_ASSIGNOP == 0,
+       lineNumber == 0, empty lexeme) but are not real TK_ASSIGNOP tokens. */
+    int isEpsilon = (node->symbol.type == SYMBOL_TERMINAL &&
+                     node->symbol.symbol.terminal == TK_EPSILON);
+    int isUnmatched =
+        (node->token.lineNumber == 0 && node->token.lexeme[0] == '\0');
+    if (isEpsilon || isUnmatched) {
+      fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-18s  %-s\n",
+              "----", "EPS", "----", "EPS", "----", parentStr, "yes", "----");
+    } else {
+      char valueStr[32];
+      if (node->token.tokenType == TK_NUM && node->token.hasValue)
+        snprintf(valueStr, sizeof(valueStr), "%d", node->token.value.intValue);
+      else if (node->token.tokenType == TK_RNUM && node->token.hasValue)
+        snprintf(valueStr, sizeof(valueStr), "%.2f",
+                 node->token.value.realValue);
+      else
+        strcpy(valueStr, "----");
 
-    const char *lex =
-        (node->token.lexeme[0] != '\0') ? node->token.lexeme : "----";
+      const char *lex =
+          (node->token.lexeme[0] != '\0') ? node->token.lexeme : "----";
 
-    const char *currentNode = getTokenName(node->token.tokenType);
+      const char *currentNode = getTokenName(node->token.tokenType);
 
-    fprintf(fp, "%-20s  %-30s  %-6d  %-22s  %-12s  %-30s  %-5s  %-s\n", lex,
-            currentNode, node->token.lineNumber,
-            getTokenName(node->token.tokenType), valueStr, parentStr, "yes",
-            "----");
+      fprintf(fp, "%-20s  %-30s  %-6d  %-22s  %-12s  %-30s  %-18s  %-s\n", lex,
+              currentNode, node->token.lineNumber,
+              getTokenName(node->token.tokenType), valueStr, parentStr, "yes",
+              "----");
+    }
   } else {
     const char *fullNT = getNonTerminalName(node->symbol.symbol.nonTerminal);
     char ntStr[64];
@@ -1110,7 +1216,7 @@ static void printInorder(parseTreeNode *node, FILE *fp) {
       printInorder(node->children[0], fp);
     }
 
-    fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-5s  %-s\n", "----",
+    fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-18s  %-s\n", "----",
             ntStr, "----", "----", "----", parentStr, "no", ntStr);
 
     for (int i = 1; i < node->childCount; i++) {
@@ -1131,9 +1237,9 @@ void printParseTree(parseTree *PT, char *outfile) {
     return;
   }
 
-  fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-5s  %-s\n", "lexeme",
+  fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-18s  %-s\n", "lexeme",
           "CurrentNode", "lineno", "tokenName", "valueIfNumber",
-          "parentNodeSymbol", "isLeaf", "NodeSymbol");
+          "parentNodeSymbol", "isLeafNode(yes/no)", "NodeSymbol");
   fprintf(fp, "%s\n",
           "--------------------------------------------------------------------"
           "---------------------------------"
@@ -1191,5 +1297,5 @@ void printParseTable(table *T, grammar *G) {
       }
     }
   }
-  (void)G; 
+  (void)G;
 }
