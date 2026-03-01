@@ -1,24 +1,5 @@
-/**
- * lexer.c
- * Lexical Analyzer Implementation
- * CS F363 Compiler Design Project - BITS Pilani
- *
- * DFA-based tokenization with twin buffer for efficient I/O.
- * Handles all tokens per Table 1 in the language specification.
- *
- * Key fixes/features:
- *  - Twin buffer (4096 bytes each half) for O(1) character access
- *  - Proper retraction for <-  (double retract → TK_LT + TK_MINUS)
- *  - 23.abc → "23." as TK_ERROR, "abc" as TK_FIELDID  (Announcement 2)
- *  - TK_COMMENT returned (not silently skipped) so option 2 can display them
- *  - Descriptive error messages on TK_ERROR tokens
- */
-
 #include "lexerDef.h"
 
-/* -----------------------------------------------
- * Keyword lookup table
- * ----------------------------------------------- */
 static KeywordEntry keywordTable[] = {{"with", TK_WITH},
                                       {"parameters", TK_PARAMETERS},
                                       {"end", TK_END},
@@ -48,23 +29,13 @@ static KeywordEntry keywordTable[] = {{"with", TK_WITH},
                                       {"else", TK_ELSE},
                                       {NULL, TK_ERROR}};
 
-/* -----------------------------------------------
- * Character class helpers
- * ----------------------------------------------- */
 static inline int isDIG(char c) { return c >= '0' && c <= '9'; }
 static inline int isD27(char c) { return c >= '2' && c <= '7'; }
 static inline int isLOW(char c) { return c >= 'a' && c <= 'z'; }
 static inline int isBD(char c) { return c == 'b' || c == 'c' || c == 'd'; }
-static inline int isLET(char c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
-static inline int isWS(char c) {
-  return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
+static inline int isLET(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }
+static inline int isWS(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
 
-/* -----------------------------------------------
- * Twin buffer management
- * ----------------------------------------------- */
 twinBuffer *initializeTwinBuffer(FILE *fp) {
   twinBuffer *tb = (twinBuffer *)malloc(sizeof(twinBuffer));
   if (!tb) {
@@ -80,14 +51,12 @@ twinBuffer *initializeTwinBuffer(FILE *fp) {
   tb->lineNumber = 1;
   memset(tb->buffer, 0, sizeof(tb->buffer));
 
-  /* Load first half */
   size_t n = fread(tb->buffer, 1, BUFFER_SIZE, fp);
   if (n < BUFFER_SIZE) {
     tb->buffer[n] = (char)EOF;
     tb->eof1 = 1;
   }
 
-  /* Load second half */
   n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, fp);
   if (n < BUFFER_SIZE) {
     tb->buffer[BUFFER_SIZE + n] = (char)EOF;
@@ -99,17 +68,12 @@ twinBuffer *initializeTwinBuffer(FILE *fp) {
 
 char getNextChar(twinBuffer *tb) {
   char c = tb->buffer[tb->forward];
-
-  /* EOF sentinel hit */
   if ((unsigned char)c == (unsigned char)EOF) {
     if ((tb->forward < BUFFER_SIZE && tb->eof1) ||
         (tb->forward >= BUFFER_SIZE && tb->eof2))
       return (char)EOF;
   }
-
   tb->forward++;
-
-  /* Reload first half when moving into second */
   if (tb->forward == BUFFER_SIZE && !tb->eof1) {
     size_t n = fread(tb->buffer, 1, BUFFER_SIZE, tb->fp);
     if (n < BUFFER_SIZE) {
@@ -117,7 +81,6 @@ char getNextChar(twinBuffer *tb) {
       tb->eof1 = 1;
     }
   }
-  /* Reload second half and wrap around */
   else if (tb->forward == TWIN_BUFFER_SIZE) {
     if (!tb->eof2) {
       size_t n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, tb->fp);
@@ -128,7 +91,6 @@ char getNextChar(twinBuffer *tb) {
     }
     tb->forward = 0;
   }
-
   if (c == '\n')
     tb->lineNumber++;
   return c;
@@ -164,9 +126,6 @@ void freeTwinBuffer(twinBuffer *tb) {
   }
 }
 
-/* -----------------------------------------------
- * Keyword lookup
- * ----------------------------------------------- */
 TokenType lookupKeyword(const char *lexeme) {
   for (int i = 0; keywordTable[i].keyword != NULL; i++)
     if (strcmp(lexeme, keywordTable[i].keyword) == 0)
@@ -174,9 +133,6 @@ TokenType lookupKeyword(const char *lexeme) {
   return TK_FIELDID;
 }
 
-/* -----------------------------------------------
- * Main tokenizer  (DFA-based)
- * ----------------------------------------------- */
 tokenInfo getNextToken(twinBuffer *tb) {
   tokenInfo token;
   memset(&token, 0, sizeof(token));
@@ -187,7 +143,6 @@ restart:
   int startLine = tb->lineNumber;
   c = getNextChar(tb);
 
-  /* EOF */
   if ((unsigned char)c == (unsigned char)EOF) {
     token.tokenType = TK_EOF;
     token.lineNumber = startLine;
@@ -195,47 +150,34 @@ restart:
     return token;
   }
 
-  /* ---- Whitespace: skip and restart ---- */
   if (isWS(c)) {
     while (isWS(c))
       c = getNextChar(tb);
-    /* Only retract if we stopped on a real character.
-     * getNextChar does NOT advance forward when it returns EOF,
-     * so retracting would move backward to the last whitespace
-     * and cause an infinite restart cycle. */
     if ((unsigned char)c != (unsigned char)EOF)
       retract(tb, 1);
     goto restart;
   }
-
-  /* ---- Comment: read to end of line, return TK_COMMENT ---- */
   if (c == '%') {
     while (c != '\n' && (unsigned char)c != (unsigned char)EOF)
       c = getNextChar(tb);
     if (c == '\n')
-      retract(tb, 1); /* keep newline for line tracking */
+      retract(tb, 1);
     token.tokenType = TK_COMMENT;
     token.lineNumber = startLine;
     strcpy(token.lexeme, "%");
     return token;
   }
-
-  /* ---- Digits: integer or real ---- */
   if (isDIG(c)) {
-    /* consume all leading digits */
     while (isDIG(c = getNextChar(tb)))
       ;
     if ((unsigned char)c == (unsigned char)EOF || !isDIG(c)) {
       if (c == '.') {
-        /* Dot after integer: need exactly 2 fraction digits */
         char c2 = getNextChar(tb);
         if (isDIG(c2)) {
           char c3 = getNextChar(tb);
           if (isDIG(c3)) {
-            /* Could be TK_RNUM or exponent form */
             char c4 = getNextChar(tb);
             if (c4 == 'E') {
-              /* Exponent: +/- or digit digit */
               char c5 = getNextChar(tb);
               int hasSign = (c5 == '+' || c5 == '-');
               if (hasSign)
@@ -243,7 +185,6 @@ restart:
               if (isDIG(c5)) {
                 char c6 = getNextChar(tb);
                 if (isDIG(c6)) {
-                  /* Valid: NNN.NNE[+-]NN */
                   retract(tb, 1);
                   getLexeme(tb, token.lexeme);
                   token.tokenType = TK_RNUM;
@@ -252,7 +193,6 @@ restart:
                   token.lineNumber = startLine;
                   return token;
                 } else {
-                  /* Only 1 exponent digit */
                   retract(tb, 1);
                   getLexeme(tb, token.lexeme);
                   token.tokenType = TK_ERROR;
@@ -263,12 +203,10 @@ restart:
                   return token;
                 }
               } else {
-                /* No digit after sign/E */
                 if (hasSign)
                   retract(tb, 2);
                 else
                   retract(tb, 1);
-                /* Emit NNN.NN as RNUM (no E part) */
                 getLexeme(tb, token.lexeme);
                 token.tokenType = TK_RNUM;
                 token.value.realValue = atof(token.lexeme);
@@ -277,7 +215,6 @@ restart:
                 return token;
               }
             } else {
-              /* No E: valid TK_RNUM NNN.NN */
               retract(tb, 1);
               getLexeme(tb, token.lexeme);
               token.tokenType = TK_RNUM;
@@ -287,7 +224,6 @@ restart:
               return token;
             }
           } else {
-            /* Only 1 fraction digit: NNN.N → error */
             retract(tb, 1);
             getLexeme(tb, token.lexeme);
             token.tokenType = TK_ERROR;
@@ -298,7 +234,6 @@ restart:
             return token;
           }
         } else {
-          /* NNN.X where X is not digit: "NNN." → TK_ERROR, retract X */
           retract(tb, 1);
           getLexeme(tb, token.lexeme);
           token.tokenType = TK_ERROR;
@@ -309,7 +244,6 @@ restart:
           return token;
         }
       } else {
-        /* Plain integer */
         if ((unsigned char)c != (unsigned char)EOF)
           retract(tb, 1);
         getLexeme(tb, token.lexeme);
@@ -320,10 +254,7 @@ restart:
         return token;
       }
     }
-    /* fallthrough impossible */
   }
-
-  /* ---- Underscore: _main or TK_FUNID ---- */
   if (c == '_') {
     c = getNextChar(tb);
     if (!isLET(c)) {
@@ -355,8 +286,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- # : record/union identifier ---- */
   if (c == '#') {
     c = getNextChar(tb);
     if (!isLOW(c)) {
@@ -377,25 +306,14 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- b/c/d : variable ID or keyword ---- */
   if (isBD(c)) {
-
     c = getNextChar(tb);
     if (isD27(c)) {
-      /* Potential TK_ID: [b-d][2-7][b-d]*[2-7]*
-       * BUG FIX: c currently holds the mandatory first [2-7] digit.
-       * We must advance past it before consuming the optional [b-d]* and [2-7]*
-       * tails; otherwise the while-loops both start on the same [2-7] digit,
-       * the isBD loop silently skips (digit ≠ b/c/d), the isD27 loop
-       * only reads one char and stops on the first [b-d] body letter,
-       * causing identifiers like d5cc34 to be cut at d5cc → TK_FIELDID.
-       */
-      c = getNextChar(tb); /* advance past first [2-7] */
+      c = getNextChar(tb);
       while (isBD(c))
-        c = getNextChar(tb); /* consume [b-d]* */
+        c = getNextChar(tb);
       while (isD27(c))
-        c = getNextChar(tb); /* consume [2-7]* */
+        c = getNextChar(tb);
       if (!isLOW(c) && !isDIG(c)) {
         if ((unsigned char)c != (unsigned char)EOF)
           retract(tb, 1);
@@ -407,13 +325,11 @@ restart:
           token.tokenType = TK_ERROR;
           token.errorType = ERR_ID_TOO_LONG;
           snprintf(token.errorMsg, sizeof(token.errorMsg),
-                   "Variable Identifier is longer than the prescribed length "
-                   "of 20 characters.");
+                   "Variable Identifier is longer than the prescribed length of 20 characters.");
         }
         token.lineNumber = startLine;
         return token;
       } else {
-        /* Continuation chars not in pattern → treat as field/keyword */
         while (isLOW(c))
           c = getNextChar(tb);
         if ((unsigned char)c != (unsigned char)EOF)
@@ -424,7 +340,6 @@ restart:
         return token;
       }
     } else if (isLOW(c)) {
-      /* Part of a longer lowercase word (keyword or fieldid) */
       while (isLOW(c))
         c = getNextChar(tb);
       if ((unsigned char)c != (unsigned char)EOF)
@@ -434,7 +349,6 @@ restart:
       token.lineNumber = startLine;
       return token;
     } else {
-      /* Single b/c/d: could be keyword prefix — try as word */
       retract(tb, 1);
       getLexeme(tb, token.lexeme);
       token.tokenType = lookupKeyword(token.lexeme);
@@ -442,8 +356,6 @@ restart:
       return token;
     }
   }
-
-  /* ---- Other lowercase: keyword or TK_FIELDID ---- */
   if (isLOW(c)) {
     while (isLOW(c))
       c = getNextChar(tb);
@@ -454,8 +366,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- < ---- */
   if (c == '<') {
     c = getNextChar(tb);
     if (c == '=') {
@@ -464,19 +374,15 @@ restart:
       token.lineNumber = startLine;
       return token;
     } else if (c == '-') {
-      /* <-  */
       c = getNextChar(tb);
       if (c == '-') {
-        /* <--  */
         c = getNextChar(tb);
         if (c == '-') {
-          /* <--- valid assignment operator */
           token.tokenType = TK_ASSIGNOP;
           strcpy(token.lexeme, "<---");
           token.lineNumber = startLine;
           return token;
         } else {
-          /* <-- invalid */
           retract(tb, 1);
           getLexeme(tb, token.lexeme);
           token.tokenType = TK_ERROR;
@@ -487,7 +393,6 @@ restart:
           return token;
         }
       } else {
-        /* <- : double retract → return TK_LT for '<', next call gets '-' */
         retract(tb, 2);
         token.tokenType = TK_LT;
         strcpy(token.lexeme, "<");
@@ -502,8 +407,6 @@ restart:
       return token;
     }
   }
-
-  /* ---- > ---- */
   if (c == '>') {
     c = getNextChar(tb);
     if (c == '=') {
@@ -517,8 +420,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- = ---- */
   if (c == '=') {
     c = getNextChar(tb);
     if (c == '=') {
@@ -534,8 +435,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- ! ---- */
   if (c == '!') {
     c = getNextChar(tb);
     if (c == '=') {
@@ -551,8 +450,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- & : &&& ---- */
   if (c == '&') {
     c = getNextChar(tb);
     if (c == '&') {
@@ -578,8 +475,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- @ : @@@ ---- */
   if (c == '@') {
     c = getNextChar(tb);
     if (c == '@') {
@@ -605,8 +500,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- | : invalid ---- */
   if (c == '|') {
     token.tokenType = TK_ERROR;
     token.errorType = ERR_UNKNOWN_SYMBOL;
@@ -615,8 +508,6 @@ restart:
     token.lineNumber = startLine;
     return token;
   }
-
-  /* ---- Single-character tokens ---- */
   switch (c) {
   case '~':
     token.tokenType = TK_NOT;
@@ -681,10 +572,6 @@ restart:
   return token;
 }
 
-/* -----------------------------------------------
- * Remove comments – write clean source to cleanFile.
- * Line structure (indentation, line numbers) preserved.
- * ----------------------------------------------- */
 void removeComments(char *testcaseFile, char *cleanFile) {
   FILE *in = fopen(testcaseFile, "r");
   FILE *out = fopen(cleanFile, "w");
@@ -713,9 +600,6 @@ void removeComments(char *testcaseFile, char *cleanFile) {
   fclose(out);
 }
 
-/* -----------------------------------------------
- * Token name string
- * ----------------------------------------------- */
 const char *getTokenName(TokenType token) {
   switch (token) {
   case TK_ASSIGNOP:
