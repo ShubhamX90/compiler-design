@@ -42,13 +42,26 @@ int main(int argc, char *argv[])
     printMenu();
     printf("Enter option: ");
 
-    if (scanf("%d", &option) != 1)
+    int scanResult = scanf("%d", &option);
+
+    if (scanResult == EOF)
     {
-      while (getchar() != '\n')
+      break;
+    }
+
+    if (scanResult != 1)
+    {
+      int c;
+      while ((c = getchar()) != '\n' && c != EOF)
         ;
       printf("Invalid input. Please enter a number.\n");
       continue;
     }
+
+    int temp;
+    while ((temp = getchar()) != '\n' && temp != EOF)
+      ;
+
     printf("\n");
 
     switch (option)
@@ -84,6 +97,11 @@ int main(int argc, char *argv[])
 
     if (option != 0)
     {
+      if (feof(stdin))
+      {
+        break;
+      }
+
       printf("\nPress Enter to continue...");
       int c;
       while ((c = getchar()) != '\n' && c != EOF)
