@@ -1,32 +1,9 @@
-/**
- * driver.c
- * Main driver program for compiler front-end
- * CS F363 Compiler Design Project - BITS Pilani
- *
- * Updated for new lexer/parser interface:
- *   - printToken() and getStream() removed from lexer.h; token printing done
- * inline.
- *   - tokenInfo now carries errorType and errorMsg; use those for error output.
- *   - TK_COMMENT tokens are returned by lexer (not silently skipped) so option
- * 2 can display them per Announcement 8.
- *
- * Provides menu-driven interface:
- *   0 : Exit
- *   1 : Remove comments and print clean code on console
- *   2 : Print token list (lexical analysis only)
- *   3 : Parse and verify syntax; print parse tree to file
- *   4 : Print total time taken (lexer + parser)
- */
-
 #include "lexer.h"
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-/* -----------------------------------------------
- * Forward declarations
- * ----------------------------------------------- */
 void printImplementationStatus(void);
 void printMenu(void);
 void optionCommentRemoval(char *sourceFile);
@@ -34,13 +11,12 @@ void optionPrintTokens(char *sourceFile);
 void optionParsing(char *sourceFile, char *parseTreeFile);
 void optionTiming(char *sourceFile);
 
-/* -----------------------------------------------
- * main
- * ----------------------------------------------- */
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   printImplementationStatus();
 
-  if (argc < 3) {
+  if (argc < 3)
+  {
     fprintf(stderr, "Usage: %s <source_file.txt> <parsetree_output.txt>\n",
             argv[0]);
     fprintf(stderr, "Example: ./stage1exe testcase.txt parsetreeOutFile.txt\n");
@@ -50,25 +26,24 @@ int main(int argc, char *argv[]) {
   char *sourceFile = argv[1];
   char *parseTreeFile = argv[2];
 
-  /* Verify source file can be opened */
   FILE *check = fopen(sourceFile, "r");
-  if (!check) {
+  if (!check)
+  {
     fprintf(stderr, "Error: Cannot open source file %s\n", sourceFile);
     return 1;
   }
   fclose(check);
 
   int option;
-  printf("\n========================================\n");
-  printf("  COMPILER FRONT-END - CS F363 BITS Pilani\n");
-  printf("========================================\n");
+  printf("COMPILER FRONT-END\n");
 
-  do {
+  do
+  {
     printMenu();
     printf("Enter option: ");
 
-    if (scanf("%d", &option) != 1) {
-      /* Clear bad input */
+    if (scanf("%d", &option) != 1)
+    {
       while (getchar() != '\n')
         ;
       printf("Invalid input. Please enter a number.\n");
@@ -76,28 +51,29 @@ int main(int argc, char *argv[]) {
     }
     printf("\n");
 
-    switch (option) {
+    switch (option)
+    {
     case 0:
       printf("Exiting compiler...\n");
       break;
 
     case 1:
-      printf("========== COMMENT REMOVAL ==========\n");
+      printf(" COMMENT REMOVAL \n");
       optionCommentRemoval(sourceFile);
       break;
 
     case 2:
-      printf("========== LEXICAL ANALYSIS ==========\n");
+      printf(" LEXICAL ANALYSIS \n");
       optionPrintTokens(sourceFile);
       break;
 
     case 3:
-      printf("========== SYNTAX ANALYSIS ==========\n");
+      printf(" SYNTAX ANALYSIS \n");
       optionParsing(sourceFile, parseTreeFile);
       break;
 
     case 4:
-      printf("========== PERFORMANCE TIMING ==========\n");
+      printf(" PERFORMANCE TIMING \n");
       optionTiming(sourceFile);
       break;
 
@@ -106,7 +82,8 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    if (option != 0) {
+    if (option != 0)
+    {
       printf("\nPress Enter to continue...");
       int c;
       while ((c = getchar()) != '\n' && c != EOF)
@@ -119,101 +96,82 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-/* -----------------------------------------------
- * Implementation status banner (printed at start)
- * ----------------------------------------------- */
-void printImplementationStatus(void) {
-  printf("\n========== IMPLEMENTATION STATUS ==========\n");
+void printImplementationStatus(void)
+{
+  printf("\n IMPLEMENTATION STATUS \n");
   printf("(a) FIRST and FOLLOW set automated:              YES\n");
   printf("(b) Only Lexical analyzer module developed:      NO\n");
   printf("(c) Both lexical and syntax analysis modules:    YES\n");
   printf("(d) Modules compile and run:                     YES\n");
   printf("(e) Modules work with all given test cases:      YES\n");
   printf("(f) Parse tree constructed:                      YES\n");
-  printf("============================================\n");
 }
 
-/* -----------------------------------------------
- * Menu
- * ----------------------------------------------- */
-void printMenu(void) {
-  printf("\n========== MENU ==========\n");
+void printMenu(void)
+{
+  printf("\n MENU \n");
   printf("0 : Exit\n");
   printf("1 : Remove comments and print clean code on console\n");
   printf("2 : Print token list (lexical analysis)\n");
   printf("3 : Parse and verify syntax (produces parse tree file)\n");
   printf("4 : Print total time taken by lexer and parser\n");
-  printf("==========================\n");
 }
 
-/* -----------------------------------------------
- * Option 1 : Comment removal
- * ----------------------------------------------- */
-void optionCommentRemoval(char *sourceFile) {
+void optionCommentRemoval(char *sourceFile)
+{
   char cleanFile[] = "clean_code.txt";
   removeComments(sourceFile, cleanFile);
 
   FILE *fp = fopen(cleanFile, "r");
-  if (fp) {
-    printf("\n---------- CLEAN CODE (comments removed) ----------\n");
+  if (fp)
+  {
+    printf("\n CLEAN CODE (comments removed) \n");
     int ch;
     while ((ch = fgetc(fp)) != EOF)
       printf("%c", (char)ch);
-    printf("\n---------------------------------------------------\n");
     fclose(fp);
   }
 }
 
-/* -----------------------------------------------
- * Option 2 : Print token list
- *
- * NOTE: TK_COMMENT tokens are returned by the lexer so they
- *       appear in the listing. Lexical errors are printed to
- *       stderr with the message collected in errorMsg.
- *       The pretty-print format follows Announcement 6 / 8.
- * ----------------------------------------------- */
-void optionPrintTokens(char *sourceFile) {
+void optionPrintTokens(char *sourceFile)
+{
   FILE *fp = fopen(sourceFile, "r");
-  if (!fp) {
+  if (!fp)
+  {
     fprintf(stderr, "Error: Cannot open file %s\n", sourceFile);
     return;
   }
 
   twinBuffer *tb = initializeTwinBuffer(fp);
 
-  /* Header */
-  printf("\n%-10s  %-30s  %-22s  %-8s  %-15s\n", "Line No.", "Lexeme", "Token",
-         "HasVal", "Value");
-  printf("%s\n", "-------------------------------------------------------------"
-                 "------------------------");
+  printf("\n%-10s  %-30s  %-22s  %-8s  %-15s\n", "Line No.", "Lexeme", "Token", "HasVal", "Value");
 
   tokenInfo token;
   int tokenCount = 0;
   int errorCount = 0;
 
-  do {
+  do
+  {
     token = getNextToken(tb);
 
-    if (token.tokenType == TK_ERROR) {
-      /* Lexical error – print to stderr as per spec */
-      fprintf(stderr, "Line %d\tError: %s\n", token.lineNumber,
-              token.errorMsg[0] ? token.errorMsg : token.lexeme);
+    if (token.tokenType == TK_ERROR)
+    {
+      fprintf(stderr, "Line %d\tError: %s\n", token.lineNumber, token.errorMsg[0] ? token.errorMsg : token.lexeme);
       errorCount++;
-      /* Also show the bad lexeme in the token listing */
-      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber,
-             token.lexeme, "TK_ERROR", "---",
-             token.errorMsg[0] ? token.errorMsg : "lexical error");
+
+      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber, token.lexeme, "TK_ERROR", "---", token.errorMsg[0] ? token.errorMsg : "lexical error");
       tokenCount++;
-
-    } else if (token.tokenType == TK_EOF) {
-      /* do not list EOF token */
+    }
+    else if (token.tokenType == TK_EOF)
+    {
       break;
-
-    } else {
-      /* Normal token (including TK_COMMENT) */
+    }
+    else
+    {
       char valueStr[32] = "----";
       char hasValStr[8] = "no";
-      if (token.hasValue) {
+      if (token.hasValue)
+      {
         strcpy(hasValStr, "yes");
         if (token.tokenType == TK_NUM)
           snprintf(valueStr, sizeof(valueStr), "%d", token.value.intValue);
@@ -221,15 +179,12 @@ void optionPrintTokens(char *sourceFile) {
           snprintf(valueStr, sizeof(valueStr), "%.4f", token.value.realValue);
       }
 
-      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber,
-             token.lexeme, getTokenName(token.tokenType), hasValStr, valueStr);
+      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber, token.lexeme, getTokenName(token.tokenType), hasValStr, valueStr);
       tokenCount++;
     }
 
   } while (token.tokenType != TK_EOF);
 
-  printf("%s\n", "-------------------------------------------------------------"
-                 "------------------------");
   printf("Total tokens listed: %d\n", tokenCount);
   if (errorCount > 0)
     printf("Total lexical errors: %d  (details on stderr)\n", errorCount);
@@ -237,10 +192,8 @@ void optionPrintTokens(char *sourceFile) {
   freeTwinBuffer(tb);
 }
 
-/* -----------------------------------------------
- * Option 3 : Parse and produce parse tree
- * ----------------------------------------------- */
-void optionParsing(char *sourceFile, char *parseTreeFile) {
+void optionParsing(char *sourceFile, char *parseTreeFile)
+{
   printf("Initializing grammar...\n");
   grammar *G = initializeGrammar();
   printf("Grammar initialized with %d rules.\n", G->ruleCount);
@@ -257,20 +210,21 @@ void optionParsing(char *sourceFile, char *parseTreeFile) {
   printf("Parsing: %s\n", sourceFile);
   parseTree *PT = parseInputSourceCode(sourceFile, &T, G);
 
-  if (PT && PT->root) {
+  if (PT && PT->root)
+  {
     printParseTree(PT, parseTreeFile);
     freeParseTree(PT);
-  } else {
+  }
+  else
+  {
     fprintf(stderr, "Parsing failed – no parse tree generated.\n");
   }
 
   free(G);
 }
 
-/* -----------------------------------------------
- * Option 4 : Measure lexer + parser time
- * ----------------------------------------------- */
-void optionTiming(char *sourceFile) {
+void optionTiming(char *sourceFile)
+{
   clock_t start_time, end_time;
   double total_CPU_time, total_CPU_time_in_seconds;
 
@@ -281,7 +235,6 @@ void optionTiming(char *sourceFile) {
   table T;
   createParseTable(&F, &T, G);
 
-  /* Use a throwaway parse tree output file for timing run */
   parseTree *PT = parseInputSourceCode(sourceFile, &T, G);
 
   end_time = clock();
@@ -289,10 +242,10 @@ void optionTiming(char *sourceFile) {
   total_CPU_time = (double)(end_time - start_time);
   total_CPU_time_in_seconds = total_CPU_time / CLOCKS_PER_SEC;
 
-  printf("\n========== PERFORMANCE METRICS ==========\n");
+  printf("\n PERFORMANCE METRICS \n");
   printf("Total CPU time (clock ticks) : %.0f\n", total_CPU_time);
   printf("Total CPU time (seconds)     : %.6f\n", total_CPU_time_in_seconds);
-  printf("=========================================\n");
+  printf("\n");
 
   if (PT)
     freeParseTree(PT);
