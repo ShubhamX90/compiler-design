@@ -1,0 +1,128 @@
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           %                               TK_COMMENT              no        ----           
+2           %                               TK_COMMENT              no        ----           
+3           %                               TK_COMMENT              no        ----           
+4           _sumN                           TK_FUNID                no        ----           
+4           input                           TK_INPUT                no        ----           
+4           parameter                       TK_PARAMETER            no        ----           
+4           list                            TK_LIST                 no        ----           
+4           [                               TK_SQL                  no        ----           
+4           int                             TK_INT                  no        ----           
+4           d5cc34                          TK_ID                   no        ----           
+4           ]                               TK_SQR                  no        ----           
+5           output                          TK_OUTPUT               no        ----           
+5           parameter                       TK_PARAMETER            no        ----           
+5           list                            TK_LIST                 no        ----           
+5           [                               TK_SQL                  no        ----           
+5           real                            TK_REAL                 no        ----           
+5           d3                              TK_ID                   no        ----           
+5           ]                               TK_SQR                  no        ----           
+5           ;                               TK_SEM                  no        ----           
+6           type                            TK_TYPE                 no        ----           
+6           int                             TK_INT                  no        ----           
+6           :                               TK_COLON                no        ----           
+6           b5b567                          TK_ID                   no        ----           
+6           ;                               TK_SEM                  no        ----           
+7           b5b567                          TK_ID                   no        ----           
+7           <---                            TK_ASSIGNOP             no        ----           
+7           1                               TK_NUM                  yes       1              
+7           ;                               TK_SEM                  no        ----           
+8           d3                              TK_ID                   no        ----           
+8           <---                            TK_ASSIGNOP             no        ----           
+8           0.00                            TK_RNUM                 yes       0.0000         
+8           ;                               TK_SEM                  no        ----           
+9           while                           TK_WHILE                no        ----           
+9           (                               TK_OP                   no        ----           
+9           b5b567                          TK_ID                   no        ----           
+9           <=                              TK_LE                   no        ----           
+9           d5cc34                          TK_ID                   no        ----           
+9           )                               TK_CL                   no        ----           
+10          read                            TK_READ                 no        ----           
+10          (                               TK_OP                   no        ----           
+10          c3bd                            TK_ID                   no        ----           
+10          )                               TK_CL                   no        ----           
+10          ;                               TK_SEM                  no        ----           
+11          d3                              TK_ID                   no        ----           
+11          <---                            TK_ASSIGNOP             no        ----           
+11          d3                              TK_ID                   no        ----           
+11          +                               TK_PLUS                 no        ----           
+11          c3bd                            TK_ID                   no        ----           
+11          ;                               TK_SEM                  no        ----           
+12          b5b567                          TK_ID                   no        ----           
+12          <---                            TK_ASSIGNOP             no        ----           
+12          b5b567                          TK_ID                   no        ----           
+12          +                               TK_PLUS                 no        ----           
+12          1                               TK_NUM                  yes       1              
+12          ;                               TK_SEM                  no        ----           
+13          endwhile                        TK_ENDWHILE             no        ----           
+14          return                          TK_RETURN               no        ----           
+14          [                               TK_SQL                  no        ----           
+14          d3                              TK_ID                   no        ----           
+14          ]                               TK_SQR                  no        ----           
+14          ;                               TK_SEM                  no        ----           
+15          end                             TK_END                  no        ----           
+17          _main                           TK_MAIN                 no        ----           
+18          type                            TK_TYPE                 no        ----           
+18          int                             TK_INT                  no        ----           
+18          :                               TK_COLON                no        ----           
+18          b3                              TK_ID                   no        ----           
+18          ;                               TK_SEM                  no        ----           
+19          type                            TK_TYPE                 no        ----           
+19          real                            TK_REAL                 no        ----           
+19          :                               TK_COLON                no        ----           
+19          c4bd56                          TK_ID                   no        ----           
+19          ;                               TK_SEM                  no        ----           
+20          b3                              TK_ID                   no        ----           
+20          <---                            TK_ASSIGNOP             no        ----           
+20          7                               TK_NUM                  yes       7              
+20          ;                               TK_SEM                  no        ----           
+21          [                               TK_SQL                  no        ----           
+21          c4bd56                          TK_ID                   no        ----           
+21          ]                               TK_SQR                  no        ----           
+21          <---                            TK_ASSIGNOP             no        ----           
+21          call                            TK_CALL                 no        ----           
+21          _sumN                           TK_FUNID                no        ----           
+21          with                            TK_WITH                 no        ----           
+21          parameters                      TK_PARAMETERS           no        ----           
+21          [                               TK_SQL                  no        ----           
+21          b3                              TK_ID                   no        ----           
+21          ]                               TK_SQR                  no        ----           
+21          ;                               TK_SEM                  no        ----           
+22          write                           TK_WRITE                no        ----           
+22          (                               TK_OP                   no        ----           
+22          c4bd56                          TK_ID                   no        ----           
+22          )                               TK_CL                   no        ----           
+22          ;                               TK_SEM                  no        ----           
+23          return                          TK_RETURN               no        ----           
+23          ;                               TK_SEM                  no        ----           
+24          end                             TK_END                  no        ----           
+Total tokens listed: 97
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

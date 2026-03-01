@@ -1,0 +1,51 @@
+Line 7	Error: The token TK_SQL for lexeme [  does not match with the expected token TK_LIST
+Line 8	Error: Variable Identifier is longer than 20 characters.
+Line 8	Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_ID
+Line 10	Error: Unknown pattern <5000.7>
+Line 10	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 11	Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_CL
+Line 13	Error: Unknown pattern <&&>
+Line 13	Error: Invalid token TK_OP encountered with value ( stack top logicalOp>
+Line 16	Error: Invalid token TK_ELSE encountered with value else stack top option_single_constructed>
+Line 20	Error: Invalid token TK_END encountered with value end stack top otherStmts>
+Line 25	Error: The token TK_ID for lexeme b5  does not match with the expected token TK_COLON
+Line 28	Error: Unknown Symbol <$>
+Line 29	Error: Unknown pattern <<-->
+Line 29	Error: Invalid token TK_NUM encountered with value 1 stack top option_single_constructed>
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ SYNTAX ANALYSIS 
+Initializing grammar...
+Grammar initialized with 95 rules.
+Computing FIRST and FOLLOW sets...
+FIRST and FOLLOW sets computed.
+Building predictive parse table...
+Parse table ready.
+
+Parsing: parser_test_cases/t6.txt
+Parse tree written to test_outputs/pt_t6.txt
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

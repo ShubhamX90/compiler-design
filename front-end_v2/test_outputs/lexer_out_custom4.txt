@@ -1,0 +1,61 @@
+Line 3	Error: <-
+Line 4	Error: Unknown pattern <23.>
+Line 5	Error: Unknown pattern <23.4>
+Line 6	Error: Unknown pattern <<-->
+Line 9	Error: Unknown pattern <23.5>
+Line 15	Error: Unknown Symbol <Z>
+Line 18	Error: <-
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           _main                           TK_MAIN                 no        ----           
+1           return                          TK_RETURN               no        ----           
+1           ;                               TK_SEM                  no        ----           
+2           end                             TK_END                  no        ----           
+3           x                               TK_FIELDID              no        ----           
+3           <-                              TK_ERROR                ---       lexical error  
+3           ;                               TK_SEM                  no        ----           
+4           23.                             TK_ERROR                ---       Unknown pattern <23.>
+4           abc                             TK_FIELDID              no        ----           
+5           23.4                            TK_ERROR                ---       Unknown pattern <23.4>
+6           <--                             TK_ERROR                ---       Unknown pattern <<-->
+7           <---                            TK_ASSIGNOP             no        ----           
+8           23.45                           TK_RNUM                 yes       23.4500        
+9           23.5                            TK_ERROR                ---       Unknown pattern <23.5>
+10          b2                              TK_ID                   no        ----           
+11          b2d7                            TK_ID                   no        ----           
+12          b2d                             TK_ID                   no        ----           
+13          #abc                            TK_RUID                 no        ----           
+14          #a                              TK_RUID                 no        ----           
+15          Z                               TK_ERROR                ---       Unknown Symbol <Z>
+16          &&&                             TK_AND                  no        ----           
+18          <-                              TK_ERROR                ---       lexical error  
+Total tokens listed: 22
+Total lexical errors: 7  (details on stderr)
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

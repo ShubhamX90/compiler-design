@@ -1,0 +1,72 @@
+Line 25	Error: The token TK_SQL for lexeme [  does not match with the expected token TK_LIST
+Line 39	Error: Variable Identifier is longer than 20 characters.
+Line 39	Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_ID
+Line 54	Error: Unknown pattern <5000.7>
+Line 54	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 66	Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_CL
+Line 79	Error: Unknown pattern <&&>
+Line 79	Error: Invalid token TK_OP encountered with value ( stack top logicalOp>
+Line 96	Error: Invalid token TK_ID encountered with value b3 stack top termPrime>
+Line 106	Error: Unknown Symbol <$>
+Line 119	Error: <-
+Line 119	Error: Invalid token TK_ID encountered with value b2 stack top option_single_constructed>
+Line 131	Error: Unknown pattern <23.>
+Line 131	Error: Invalid token TK_FIELDID encountered with value abc stack top arithmeticExpression>
+Line 143	Error: Unknown pattern <123.5>
+Line 143	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 156	Error: Invalid token TK_GT encountered with value > stack top var>
+Line 171	Error: Unknown Symbol <|>
+Line 171	Error: Unknown Symbol <|>
+Line 171	Error: Unknown Symbol <|>
+Line 171	Error: Invalid token TK_ID encountered with value b3 stack top option_single_constructed>
+Line 182	Error: The token TK_ID for lexeme b5  does not match with the expected token TK_COLON
+Line 197	Error: The token TK_ID for lexeme d7  does not match with the expected token TK_THEN
+Line 216	Error: The token TK_RETURN for lexeme return  does not match with the expected token TK_ENDWHILE
+Line 225	Error: The token TK_INT for lexeme int  does not match with the expected token TK_COLON
+Line 251	Error: Unknown pattern <<-->
+Line 251	Error: Invalid token TK_ID encountered with value b2 stack top option_single_constructed>
+Line 252	Error: Unknown pattern <5000.7>
+Line 252	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 253	Error: Unknown pattern <&&>
+Line 253	Error: Invalid token TK_OP encountered with value ( stack top logicalOp>
+Line 292	Error: Invalid token TK_RETURN encountered with value return stack top elsePart>
+Line 308	Error: Invalid token TK_ELSE encountered with value else stack top termPrime>
+Line 325	Error: Unknown pattern <@@>
+Line 325	Error: Invalid token TK_OP encountered with value ( stack top logicalOp>
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ SYNTAX ANALYSIS 
+Initializing grammar...
+Grammar initialized with 95 rules.
+Computing FIRST and FOLLOW sets...
+FIRST and FOLLOW sets computed.
+Building predictive parse table...
+Parse table ready.
+
+Parsing: parser_test_cases/custom6.txt
+Parse tree written to test_outputs/pt_custom6.txt
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

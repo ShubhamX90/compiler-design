@@ -1,0 +1,3 @@
+lexeme                CurrentNode                     lineno  tokenName               valueIfNumber  parentNodeSymbol                isLeafNode(yes/no)  NodeSymbol
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+----                  EPS                             ----    EPS                     ----          ROOT                            yes                 ----

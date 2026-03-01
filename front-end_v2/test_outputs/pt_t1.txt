@@ -1,0 +1,9 @@
+lexeme                CurrentNode                     lineno  tokenName               valueIfNumber  parentNodeSymbol                isLeafNode(yes/no)  NodeSymbol
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+----                  EPS                             ----    EPS                     ----          otherFunctions                  yes                 ----
+----                  otherFunctions                  ----    ----                    ----          program                         no                  otherFunctions
+----                  program                         ----    ----                    ----          ROOT                            no                  program
+_main                 TK_MAIN                         5       TK_MAIN                 ----          mainFunction                    yes                 ----
+----                  mainFunction                    ----    ----                    ----          program                         no                  mainFunction
+----                  EPS                             ----    EPS                     ----          mainFunction                    yes                 ----
+----                  EPS                             ----    EPS                     ----          mainFunction                    yes                 ----

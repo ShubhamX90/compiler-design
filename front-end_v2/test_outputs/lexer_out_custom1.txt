@@ -1,0 +1,215 @@
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           %                               TK_COMMENT              no        ----           
+2           %                               TK_COMMENT              no        ----           
+4           _functionOne                    TK_FUNID                no        ----           
+4           input                           TK_INPUT                no        ----           
+4           parameter                       TK_PARAMETER            no        ----           
+4           list                            TK_LIST                 no        ----           
+4           [                               TK_SQL                  no        ----           
+4           int                             TK_INT                  no        ----           
+4           b2b2                            TK_ID                   no        ----           
+4           b2b2                            TK_ID                   no        ----           
+4           b2b2                            TK_ID                   no        ----           
+4           b2b2                            TK_ID                   no        ----           
+4           b2b2                            TK_ID                   no        ----           
+4           ,                               TK_COMMA                no        ----           
+4           real                            TK_REAL                 no        ----           
+4           c7d7                            TK_ID                   no        ----           
+4           c7d7                            TK_ID                   no        ----           
+4           c7d7                            TK_ID                   no        ----           
+4           c7d7                            TK_ID                   no        ----           
+4           c7d7                            TK_ID                   no        ----           
+4           ]                               TK_SQR                  no        ----           
+5           output                          TK_OUTPUT               no        ----           
+5           parameter                       TK_PARAMETER            no        ----           
+5           list                            TK_LIST                 no        ----           
+5           [                               TK_SQL                  no        ----           
+5           real                            TK_REAL                 no        ----           
+5           d5                              TK_ID                   no        ----           
+5           ]                               TK_SQR                  no        ----           
+5           ;                               TK_SEM                  no        ----           
+6           %                               TK_COMMENT              no        ----           
+7           [                               TK_SQL                  no        ----           
+7           d5                              TK_ID                   no        ----           
+7           ]                               TK_SQR                  no        ----           
+7           <---                            TK_ASSIGNOP             no        ----           
+7           call                            TK_CALL                 no        ----           
+7           _aVeryLongFunctionNameThatIs30  TK_FUNID                no        ----           
+7           with                            TK_WITH                 no        ----           
+7           parameters                      TK_PARAMETERS           no        ----           
+7           [                               TK_SQL                  no        ----           
+7           b2b2                            TK_ID                   no        ----           
+7           b2b2                            TK_ID                   no        ----           
+7           b2b2                            TK_ID                   no        ----           
+7           b2b2                            TK_ID                   no        ----           
+7           b2b2                            TK_ID                   no        ----           
+7           ]                               TK_SQR                  no        ----           
+7           ;                               TK_SEM                  no        ----           
+8           return                          TK_RETURN               no        ----           
+8           [                               TK_SQL                  no        ----           
+8           d5                              TK_ID                   no        ----           
+8           ]                               TK_SQR                  no        ----           
+8           ;                               TK_SEM                  no        ----           
+9           end                             TK_END                  no        ----           
+11          _aVeryLongFunctionNameThatIs30  TK_FUNID                no        ----           
+11          input                           TK_INPUT                no        ----           
+11          parameter                       TK_PARAMETER            no        ----           
+11          list                            TK_LIST                 no        ----           
+11          [                               TK_SQL                  no        ----           
+11          int                             TK_INT                  no        ----           
+11          b3                              TK_ID                   no        ----           
+11          ]                               TK_SQR                  no        ----           
+12          output                          TK_OUTPUT               no        ----           
+12          parameter                       TK_PARAMETER            no        ----           
+12          list                            TK_LIST                 no        ----           
+12          [                               TK_SQL                  no        ----           
+12          real                            TK_REAL                 no        ----           
+12          c3                              TK_ID                   no        ----           
+12          ]                               TK_SQR                  no        ----           
+12          ;                               TK_SEM                  no        ----           
+13          type                            TK_TYPE                 no        ----           
+13          real                            TK_REAL                 no        ----           
+13          :                               TK_COLON                no        ----           
+13          c4                              TK_ID                   no        ----           
+13          ;                               TK_SEM                  no        ----           
+14          c4                              TK_ID                   no        ----           
+14          <---                            TK_ASSIGNOP             no        ----           
+14          12.34                           TK_RNUM                 yes       12.3400        
+14          ;                               TK_SEM                  no        ----           
+15          %                               TK_COMMENT              no        ----           
+16          c3                              TK_ID                   no        ----           
+16          <---                            TK_ASSIGNOP             no        ----           
+16          c4                              TK_ID                   no        ----           
+16          *                               TK_MUL                  no        ----           
+16          10.00E+23                       TK_RNUM                 yes       999999999999999983222784.0000
+16          /                               TK_DIV                  no        ----           
+16          1.00E-01                        TK_RNUM                 yes       0.1000         
+16          +                               TK_PLUS                 no        ----           
+16          b3                              TK_ID                   no        ----           
+16          ;                               TK_SEM                  no        ----           
+17          return                          TK_RETURN               no        ----           
+17          [                               TK_SQL                  no        ----           
+17          c3                              TK_ID                   no        ----           
+17          ]                               TK_SQR                  no        ----           
+17          ;                               TK_SEM                  no        ----           
+18          end                             TK_END                  no        ----           
+20          %                               TK_COMMENT              no        ----           
+21          definetype                      TK_DEFINETYPE           no        ----           
+21          record                          TK_RECORD               no        ----           
+21          #original                       TK_RUID                 no        ----           
+21          as                              TK_AS                   no        ----           
+21          #aliasone                       TK_RUID                 no        ----           
+22          record                          TK_RECORD               no        ----           
+22          #original                       TK_RUID                 no        ----           
+23          type                            TK_TYPE                 no        ----           
+23          int                             TK_INT                  no        ----           
+23          :                               TK_COLON                no        ----           
+23          innerfield                      TK_FIELDID              no        ----           
+23          ;                               TK_SEM                  no        ----           
+24          endrecord                       TK_ENDRECORD            no        ----           
+26          definetype                      TK_DEFINETYPE           no        ----           
+26          record                          TK_RECORD               no        ----           
+26          #aliasone                       TK_RUID                 no        ----           
+26          as                              TK_AS                   no        ----           
+26          #aliastwo                       TK_RUID                 no        ----           
+28          _main                           TK_MAIN                 no        ----           
+29          type                            TK_TYPE                 no        ----           
+29          record                          TK_RECORD               no        ----           
+29          #aliastwo                       TK_RUID                 no        ----           
+29          :                               TK_COLON                no        ----           
+29          d2                              TK_ID                   no        ----           
+29          ;                               TK_SEM                  no        ----           
+30          type                            TK_TYPE                 no        ----           
+30          int                             TK_INT                  no        ----           
+30          :                               TK_COLON                no        ----           
+30          c5                              TK_ID                   no        ----           
+30          :                               TK_COLON                no        ----           
+30          global                          TK_GLOBAL               no        ----           
+30          ;                               TK_SEM                  no        ----           
+32          %                               TK_COMMENT              no        ----           
+33          d2                              TK_ID                   no        ----           
+33          .                               TK_DOT                  no        ----           
+33          innerfield                      TK_FIELDID              no        ----           
+33          <---                            TK_ASSIGNOP             no        ----           
+33          5                               TK_NUM                  yes       5              
+33          ;                               TK_SEM                  no        ----           
+34          while                           TK_WHILE                no        ----           
+34          (                               TK_OP                   no        ----           
+34          d2                              TK_ID                   no        ----           
+34          .                               TK_DOT                  no        ----           
+34          innerfield                      TK_FIELDID              no        ----           
+34          <=                              TK_LE                   no        ----           
+34          10                              TK_NUM                  yes       10             
+34          )                               TK_CL                   no        ----           
+35          if                              TK_IF                   no        ----           
+35          (                               TK_OP                   no        ----           
+35          ~                               TK_NOT                  no        ----           
+35          (                               TK_OP                   no        ----           
+35          d2                              TK_ID                   no        ----           
+35          .                               TK_DOT                  no        ----           
+35          innerfield                      TK_FIELDID              no        ----           
+35          ==                              TK_EQ                   no        ----           
+35          5                               TK_NUM                  yes       5              
+35          )                               TK_CL                   no        ----           
+35          &&&                             TK_AND                  no        ----           
+35          (                               TK_OP                   no        ----           
+35          d2                              TK_ID                   no        ----           
+35          .                               TK_DOT                  no        ----           
+35          innerfield                      TK_FIELDID              no        ----           
+35          !=                              TK_NE                   no        ----           
+35          7                               TK_NUM                  yes       7              
+35          )                               TK_CL                   no        ----           
+35          )                               TK_CL                   no        ----           
+36          then                            TK_THEN                 no        ----           
+37          write                           TK_WRITE                no        ----           
+37          (                               TK_OP                   no        ----           
+37          d2                              TK_ID                   no        ----           
+37          .                               TK_DOT                  no        ----           
+37          innerfield                      TK_FIELDID              no        ----           
+37          )                               TK_CL                   no        ----           
+37          ;                               TK_SEM                  no        ----           
+38          endif                           TK_ENDIF                no        ----           
+39          d2                              TK_ID                   no        ----           
+39          .                               TK_DOT                  no        ----           
+39          innerfield                      TK_FIELDID              no        ----           
+39          <---                            TK_ASSIGNOP             no        ----           
+39          d2                              TK_ID                   no        ----           
+39          .                               TK_DOT                  no        ----           
+39          innerfield                      TK_FIELDID              no        ----           
+39          +                               TK_PLUS                 no        ----           
+39          1                               TK_NUM                  yes       1              
+39          ;                               TK_SEM                  no        ----           
+40          endwhile                        TK_ENDWHILE             no        ----           
+42          return                          TK_RETURN               no        ----           
+42          ;                               TK_SEM                  no        ----           
+43          end                             TK_END                  no        ----           
+Total tokens listed: 184
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

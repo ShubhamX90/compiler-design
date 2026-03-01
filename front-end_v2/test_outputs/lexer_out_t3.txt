@@ -1,0 +1,216 @@
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+2           %                               TK_COMMENT              no        ----           
+3           %                               TK_COMMENT              no        ----           
+5           %                               TK_COMMENT              no        ----           
+6           %                               TK_COMMENT              no        ----           
+7           %                               TK_COMMENT              no        ----           
+8           _readMarks                      TK_FUNID                no        ----           
+8           input                           TK_INPUT                no        ----           
+8           parameter                       TK_PARAMETER            no        ----           
+8           list                            TK_LIST                 no        ----           
+8           [                               TK_SQL                  no        ----           
+8           int                             TK_INT                  no        ----           
+8           b7                              TK_ID                   no        ----           
+8           ]                               TK_SQR                  no        ----           
+9           output                          TK_OUTPUT               no        ----           
+9           parameter                       TK_PARAMETER            no        ----           
+9           list                            TK_LIST                 no        ----           
+9           [                               TK_SQL                  no        ----           
+9           record                          TK_RECORD               no        ----           
+9           #marks                          TK_RUID                 no        ----           
+9           b3c45                           TK_ID                   no        ----           
+9           ]                               TK_SQR                  no        ----           
+9           ;                               TK_SEM                  no        ----           
+10          read                            TK_READ                 no        ----           
+10          (                               TK_OP                   no        ----           
+10          b3c45                           TK_ID                   no        ----           
+10          .                               TK_DOT                  no        ----           
+10          maths                           TK_FIELDID              no        ----           
+10          )                               TK_CL                   no        ----           
+10          ;                               TK_SEM                  no        ----           
+11          read                            TK_READ                 no        ----           
+11          (                               TK_OP                   no        ----           
+11          b3c45                           TK_ID                   no        ----           
+11          .                               TK_DOT                  no        ----           
+11          physics                         TK_FIELDID              no        ----           
+11          )                               TK_CL                   no        ----           
+11          ;                               TK_SEM                  no        ----           
+12          read                            TK_READ                 no        ----           
+12          (                               TK_OP                   no        ----           
+12          b3c45                           TK_ID                   no        ----           
+12          .                               TK_DOT                  no        ----           
+12          chemistry                       TK_FIELDID              no        ----           
+12          )                               TK_CL                   no        ----           
+12          ;                               TK_SEM                  no        ----           
+13          return                          TK_RETURN               no        ----           
+13          [                               TK_SQL                  no        ----           
+13          b3c45                           TK_ID                   no        ----           
+13          ]                               TK_SQR                  no        ----           
+13          ;                               TK_SEM                  no        ----           
+14          end                             TK_END                  no        ----           
+15          %                               TK_COMMENT              no        ----           
+16          %                               TK_COMMENT              no        ----           
+19          %                               TK_COMMENT              no        ----           
+20          _main                           TK_MAIN                 no        ----           
+21          record                          TK_RECORD               no        ----           
+21          #marks                          TK_RUID                 no        ----           
+22          type                            TK_TYPE                 no        ----           
+22          real                            TK_REAL                 no        ----           
+22          :                               TK_COLON                no        ----           
+22          maths                           TK_FIELDID              no        ----           
+22          ;                               TK_SEM                  no        ----           
+23          type                            TK_TYPE                 no        ----           
+23          real                            TK_REAL                 no        ----           
+23          :                               TK_COLON                no        ----           
+23          physics                         TK_FIELDID              no        ----           
+23          ;                               TK_SEM                  no        ----           
+24          type                            TK_TYPE                 no        ----           
+24          real                            TK_REAL                 no        ----           
+24          :                               TK_COLON                no        ----           
+24          chemistry                       TK_FIELDID              no        ----           
+24          ;                               TK_SEM                  no        ----           
+25          endrecord                       TK_ENDRECORD            no        ----           
+26          %                               TK_COMMENT              no        ----           
+28          type                            TK_TYPE                 no        ----           
+28          record                          TK_RECORD               no        ----           
+28          #marks                          TK_RUID                 no        ----           
+28          :                               TK_COLON                no        ----           
+28          d4                              TK_ID                   no        ----           
+28          ;                               TK_SEM                  no        ----           
+29          %                               TK_COMMENT              no        ----           
+31          type                            TK_TYPE                 no        ----           
+31          int                             TK_INT                  no        ----           
+31          :                               TK_COLON                no        ----           
+31          b5                              TK_ID                   no        ----           
+31          ;                               TK_SEM                  no        ----           
+32          type                            TK_TYPE                 no        ----           
+32          int                             TK_INT                  no        ----           
+32          :                               TK_COLON                no        ----           
+32          d5cb34567                       TK_ID                   no        ----           
+32          ;                               TK_SEM                  no        ----           
+33          type                            TK_TYPE                 no        ----           
+33          record                          TK_RECORD               no        ----           
+33          #marks                          TK_RUID                 no        ----           
+33          :                               TK_COLON                no        ----           
+33          b5c6                            TK_ID                   no        ----           
+33          ;                               TK_SEM                  no        ----           
+34          %                               TK_COMMENT              no        ----           
+36          b5                              TK_ID                   no        ----           
+36          <---                            TK_ASSIGNOP             no        ----           
+36          1                               TK_NUM                  yes       1              
+36          ;                               TK_SEM                  no        ----           
+37          read                            TK_READ                 no        ----           
+37          (                               TK_OP                   no        ----           
+37          d5cb34567                       TK_ID                   no        ----           
+37          )                               TK_CL                   no        ----           
+37          ;                               TK_SEM                  no        ----           
+38          b5c6                            TK_ID                   no        ----           
+38          .                               TK_DOT                  no        ----           
+38          maths                           TK_FIELDID              no        ----           
+38          <---                            TK_ASSIGNOP             no        ----           
+38          0.00                            TK_RNUM                 yes       0.0000         
+38          ;                               TK_SEM                  no        ----           
+39          b5c6                            TK_ID                   no        ----           
+39          .                               TK_DOT                  no        ----           
+39          physics                         TK_FIELDID              no        ----           
+39          <---                            TK_ASSIGNOP             no        ----           
+39          0.00                            TK_RNUM                 yes       0.0000         
+39          ;                               TK_SEM                  no        ----           
+40          b5c6                            TK_ID                   no        ----           
+40          .                               TK_DOT                  no        ----           
+40          chemistry                       TK_FIELDID              no        ----           
+40          <---                            TK_ASSIGNOP             no        ----           
+40          0.00                            TK_RNUM                 yes       0.0000         
+40          ;                               TK_SEM                  no        ----           
+41          while                           TK_WHILE                no        ----           
+41          (                               TK_OP                   no        ----           
+41          b5                              TK_ID                   no        ----           
+41          <=                              TK_LE                   no        ----           
+41          d5cb34567                       TK_ID                   no        ----           
+41          )                               TK_CL                   no        ----           
+42          [                               TK_SQL                  no        ----           
+42          d4                              TK_ID                   no        ----           
+42          ]                               TK_SQR                  no        ----           
+42          <---                            TK_ASSIGNOP             no        ----           
+42          call                            TK_CALL                 no        ----           
+42          _readMarks                      TK_FUNID                no        ----           
+42          with                            TK_WITH                 no        ----           
+42          parameters                      TK_PARAMETERS           no        ----           
+42          [                               TK_SQL                  no        ----           
+42          b5                              TK_ID                   no        ----           
+42          ]                               TK_SQR                  no        ----           
+42          ;                               TK_SEM                  no        ----           
+43          b5c6                            TK_ID                   no        ----           
+43          <---                            TK_ASSIGNOP             no        ----           
+43          b5c6                            TK_ID                   no        ----           
+43          +                               TK_PLUS                 no        ----           
+43          d4                              TK_ID                   no        ----           
+43          ;                               TK_SEM                  no        ----           
+44          %                               TK_COMMENT              no        ----           
+45          b5                              TK_ID                   no        ----           
+45          <---                            TK_ASSIGNOP             no        ----           
+45          b5                              TK_ID                   no        ----           
+45          +                               TK_PLUS                 no        ----           
+45          1                               TK_NUM                  yes       1              
+45          ;                               TK_SEM                  no        ----           
+46          endwhile                        TK_ENDWHILE             no        ----           
+47          d4                              TK_ID                   no        ----           
+47          <---                            TK_ASSIGNOP             no        ----           
+47          b5c6                            TK_ID                   no        ----           
+47          /                               TK_DIV                  no        ----           
+47          d5cb34567                       TK_ID                   no        ----           
+47          ;                               TK_SEM                  no        ----           
+48          write                           TK_WRITE                no        ----           
+48          (                               TK_OP                   no        ----           
+48          d4                              TK_ID                   no        ----           
+48          .                               TK_DOT                  no        ----           
+48          maths                           TK_FIELDID              no        ----           
+48          )                               TK_CL                   no        ----           
+48          ;                               TK_SEM                  no        ----           
+49          write                           TK_WRITE                no        ----           
+49          (                               TK_OP                   no        ----           
+49          d4                              TK_ID                   no        ----           
+49          .                               TK_DOT                  no        ----           
+49          physics                         TK_FIELDID              no        ----           
+49          )                               TK_CL                   no        ----           
+49          ;                               TK_SEM                  no        ----           
+50          write                           TK_WRITE                no        ----           
+50          (                               TK_OP                   no        ----           
+50          d4                              TK_ID                   no        ----           
+50          .                               TK_DOT                  no        ----           
+50          chemistry                       TK_FIELDID              no        ----           
+50          )                               TK_CL                   no        ----           
+50          ;                               TK_SEM                  no        ----           
+51          return                          TK_RETURN               no        ----           
+51          ;                               TK_SEM                  no        ----           
+52          end                             TK_END                  no        ----           
+Total tokens listed: 185
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

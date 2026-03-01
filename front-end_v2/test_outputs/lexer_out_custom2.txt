@@ -1,0 +1,184 @@
+Line 13	Error: Function identifier exceeds max length of 30 characters.
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           %                               TK_COMMENT              no        ----           
+3           _main                           TK_MAIN                 no        ----           
+4           type                            TK_TYPE                 no        ----           
+4           int                             TK_INT                  no        ----           
+4           :                               TK_COLON                no        ----           
+4           b5                              TK_ID                   no        ----           
+4           ;                               TK_SEM                  no        ----           
+6           type                            TK_TYPE                 no        ----           
+6           real                            TK_REAL                 no        ----           
+6           :                               TK_COLON                no        ----           
+6           b2b2                            TK_ID                   no        ----           
+6           b2b2                            TK_ID                   no        ----           
+6           b2b2                            TK_ID                   no        ----           
+6           b2b2                            TK_ID                   no        ----           
+6           b2b22                           TK_ID                   no        ----           
+6           ;                               TK_SEM                  no        ----           
+8           %                               TK_COMMENT              no        ----           
+9           type                            TK_TYPE                 no        ----           
+9           int                             TK_INT                  no        ----           
+9           :                               TK_COLON                no        ----           
+9           a                               TK_FIELDID              no        ----           
+9           2                               TK_NUM                  yes       2              
+9           ;                               TK_SEM                  no        ----           
+10          type                            TK_TYPE                 no        ----           
+10          int                             TK_INT                  no        ----           
+10          :                               TK_COLON                no        ----           
+10          z                               TK_FIELDID              no        ----           
+10          5                               TK_NUM                  yes       5              
+10          c                               TK_FIELDID              no        ----           
+10          ;                               TK_SEM                  no        ----           
+12          %                               TK_COMMENT              no        ----           
+13          [                               TK_SQL                  no        ----           
+13          b5                              TK_ID                   no        ----           
+13          ]                               TK_SQR                  no        ----           
+13          <---                            TK_ASSIGNOP             no        ----           
+13          call                            TK_CALL                 no        ----           
+13         Line 16	Error: Unknown pattern <12.3>
+Line 18	Error: 12.34E
+Line 19	Error: Unknown pattern <12.34E+1>
+Line 20	Error: 12.34E-
+Line 23	Error: Unknown pattern <<-->
+Line 24	Error: <-
+ _thisFunctionIdentifierIsTooLong  TK_ERROR                ---       Function identifier exceeds max length of 30 characters.
+13          with                            TK_WITH                 no        ----           
+13          parameters                      TK_PARAMETERS           no        ----           
+13          [                               TK_SQL                  no        ----           
+13          ]                               TK_SQR                  no        ----           
+13          ;                               TK_SEM                  no        ----           
+15          %                               TK_COMMENT              no        ----           
+16          b5                              TK_ID                   no        ----           
+16          <---                            TK_ASSIGNOP             no        ----           
+16          12.3                            TK_ERROR                ---       Unknown pattern <12.3>
+16          ;                               TK_SEM                  no        ----           
+16          %                               TK_COMMENT              no        ----           
+17          b5                              TK_ID                   no        ----           
+17          <---                            TK_ASSIGNOP             no        ----           
+17          12.34                           TK_RNUM                 yes       12.3400        
+17          5                               TK_NUM                  yes       5              
+17          ;                               TK_SEM                  no        ----           
+17          %                               TK_COMMENT              no        ----           
+18          b5                              TK_ID                   no        ----           
+18          <---                            TK_ASSIGNOP             no        ----           
+18          12.34E                          TK_ERROR                ---       lexical error  
+18          ;                               TK_SEM                  no        ----           
+18          %                               TK_COMMENT              no        ----           
+19          b5                              TK_ID                   no        ----           
+19          <---                            TK_ASSIGNOP             no        ----           
+19          12.34E+1                        TK_ERROR                ---       Unknown pattern <12.34E+1>
+19          ;                               TK_SEM                  no        ----           
+19          %                               TK_COMMENT              no        ----           
+20          b5                              TK_ID                   no        ----           
+20          <---                            TK_ASSIGNOP             no        ----           
+20          12.34E-                         TK_ERROR                ---       lexical error  
+20          ;                               TK_SEM                  no        ----           
+20          %                               TK_COMMENT              no        ----           
+22          %                               TK_COMMENT              no        ----           
+23          b5                              TK_ID                   no        ----           
+23          <--                             TK_ERROR                ---       Unknown pattern <<-->
+23          10                              TK_NUM                  yes       10             
+23          ;                               TK_SEM                  no        ----           
+23          %                               TK_COMMENT              no        ----           
+24          b5                              TK_ID                   no        ----           
+24          <-                              TK_ERROR                ---       lexical error  
+24          5                               TK_NUM                  yes       5              
+24          ;                               TK_SEM                  no        ----          Line 27	Error: Unknown pattern <&&>
+Line 31	Error: Unknown pattern <@@>
+Line 36	Error: Unknown Symbol <!>
+ 
+24          %                               TK_COMMENT              no        ----           
+26          %                               TK_COMMENT              no        ----           
+27          if                              TK_IF                   no        ----           
+27          (                               TK_OP                   no        ----           
+27          b5                              TK_ID                   no        ----           
+27          ==                              TK_EQ                   no        ----           
+27          10                              TK_NUM                  yes       10             
+27          &&                              TK_ERROR                ---       Unknown pattern <&&>
+27          b5                              TK_ID                   no        ----           
+27          <                               TK_LT                   no        ----           
+27          20                              TK_NUM                  yes       20             
+27          )                               TK_CL                   no        ----           
+27          then                            TK_THEN                 no        ----           
+27          %                               TK_COMMENT              no        ----           
+28          b5                              TK_ID                   no        ----           
+28          <---                            TK_ASSIGNOP             no        ----           
+28          1                               TK_NUM                  yes       1              
+28          ;                               TK_SEM                  no        ----           
+29          endif                           TK_ENDIF                no        ----           
+31          if                              TK_IF                   no        ----           
+31          (                               TK_OP                   no        ----           
+31          b5                              TK_ID                   no        ----           
+31          ==                              TK_EQ                   no        ----           
+31          10                              TK_NUM                  yes       10             
+31          @@                              TK_ERROR                ---       Unknown pattern <@@>
+31          b5                              TK_ID                   no        ----           
+31          <                               TK_LT                   no        ----           
+31          20                              TK_NUM                  yes       20             
+31          )                               TK_CL                   no        ----           
+31          then                            TK_THEN                 no        ----           
+31          %                               TK_COMMENT              no        ----           
+32          b5                              TK_ID                   no        ----           
+32          <---                            TK_ASSIGNOP             no        ----           
+32          2                               TK_NUM                  yes       2              
+32          ;                               TK_SEM                  no        ----           
+33          endif                           TK_ENDIF                no        ----           
+35          %                               TK_COMMENT              no        ----           
+36          b5                              TK_ID                   no        ----           
+36          <---                            TK_ASSIGNOP             no        ----           
+36          5                               TK_NUM                  yes       5              
+36          !                               TK_ERROR                ---       Unknown Symbol <!>
+36          2                               TK_NUM                  yes       2              
+36          ;                               TK_SEM                  no        ----           
+36          %                          Line 37	Error: Unknown Symbol <|>
+Line 38	Error: Unknown Symbol <$>
+     TK_COMMENT              no        ----           
+37          b5                              TK_ID                   no        ----           
+37          <---                            TK_ASSIGNOP             no        ----           
+37          5                               TK_NUM                  yes       5              
+37          |                               TK_ERROR                ---       Unknown Symbol <|>
+37          2                               TK_NUM                  yes       2              
+37          ;                               TK_SEM                  no        ----           
+37          %                               TK_COMMENT              no        ----           
+38          type                            TK_TYPE                 no        ----           
+38          $                               TK_ERROR                ---       Unknown Symbol <$>
+38          real                            TK_REAL                 no        ----           
+38          :                               TK_COLON                no        ----           
+38          c3                              TK_ID                   no        ----           
+38          ;                               TK_SEM                  no        ----           
+38          %                               TK_COMMENT              no        ----           
+40          return                          TK_RETURN               no        ----           
+40          ;                               TK_SEM                  no        ----           
+41          end                             TK_END                  no        ----           
+Total tokens listed: 140
+Total lexical errors: 12  (details on stderr)
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

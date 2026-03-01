@@ -1,0 +1,41 @@
+Line 4	Error: Invalid token TK_ID encountered with value b2b2 stack top remaining_list>
+Line 7	Error: Invalid token TK_ID encountered with value b2b2 stack top more_ids>
+Line 21	Error: Invalid token TK_DEFINETYPE encountered with value definetype stack top otherFunctions>
+Line 35	Error: The token TK_AND for lexeme &&&  does not match with the expected token TK_CL
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ SYNTAX ANALYSIS 
+Initializing grammar...
+Grammar initialized with 95 rules.
+Computing FIRST and FOLLOW sets...
+FIRST and FOLLOW sets computed.
+Building predictive parse table...
+Parse table ready.
+
+Parsing: lexer_test_cases/custom1.txt
+Parse tree written to test_outputs/pt_custom1.txt
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

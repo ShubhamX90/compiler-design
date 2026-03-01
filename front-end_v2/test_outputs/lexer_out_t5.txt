@@ -1,0 +1,295 @@
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           %                               TK_COMMENT              no        ----           
+2           %                               TK_COMMENT              no        ----           
+4           _unionfunction                  TK_FUNID                no        ----           
+4           input                           TK_INPUT                no        ----           
+4           parameter                       TK_PARAMETER            no        ----           
+4           list                            TK_LIST                 no        ----           
+4           [                               TK_SQL                  no        ----           
+4           record                          TK_RECORD               no        ----           
+4           #two                            TK_RUID                 no        ----           
+4           d5cc34                          TK_ID                   no        ----           
+4           ,                               TK_COMMA                no        ----           
+4           #point                          TK_RUID                 no        ----           
+4           b5c6                            TK_ID                   no        ----           
+4           ]                               TK_SQR                  no        ----           
+5           output                          TK_OUTPUT               no        ----           
+5           parameter                       TK_PARAMETER            no        ----           
+5           list                            TK_LIST                 no        ----           
+5           [                               TK_SQL                  no        ----           
+5           real                            TK_REAL                 no        ----           
+5           d3                              TK_ID                   no        ----           
+5           ]                               TK_SQR                  no        ----           
+5           ;                               TK_SEM                  no        ----           
+7           record                          TK_RECORD               no        ----           
+7           #two                            TK_RUID                 no        ----           
+8           type                            TK_TYPE                 no        ----           
+8           #point                          TK_RUID                 no        ----           
+8           :                               TK_COLON                no        ----           
+8           beginpoint                      TK_FIELDID              no        ----           
+8           ;                               TK_SEM                  no        ----           
+9           type                            TK_TYPE                 no        ----           
+9           #point                          TK_RUID                 no        ----           
+9           :                               TK_COLON                no        ----           
+9           endpoint                        TK_FIELDID              no        ----           
+9           ;                               TK_SEM                  no        ----           
+10          endrecord                       TK_ENDRECORD            no        ----           
+13          type                            TK_TYPE                 no        ----           
+13          record                          TK_RECORD               no        ----           
+13          #two                            TK_RUID                 no        ----           
+13          :                               TK_COLON                no        ----           
+13          b5b567                          TK_ID                   no        ----           
+13          ;                               TK_SEM                  no        ----           
+14          type                            TK_TYPE                 no        ----           
+14          record                          TK_RECORD               no        ----           
+14          #one                            TK_RUID                 no        ----           
+14          :                               TK_COLON                no        ----           
+14          b3                              TK_ID                   no        ----           
+14          ;                               TK_SEM                  no        ----           
+15          type                            TK_TYPE                 no        ----           
+15          #point                          TK_RUID                 no        ----           
+15          :                               TK_COLON                no        ----           
+15          d5                              TK_ID                   no        ----           
+15          ;                               TK_SEM                  no        ----           
+16          b5b567                          TK_ID                   no        ----           
+16          <---                            TK_ASSIGNOP             no        ----           
+16          c6                              TK_ID                   no        ----           
+16          *                               TK_MUL                  no        ----           
+16          2                               TK_NUM                  yes       2              
+16          ;                               TK_SEM                  no        ----           
+17          b3                              TK_ID                   no        ----           
+17          <---                            TK_ASSIGNOP             no        ----           
+17          c6                              TK_ID                   no        ----           
+17          -                               TK_MINUS                no        ----           
+17          c3                              TK_ID                   no        ----           
+17          ;                               TK_SEM                  no        ----           
+18          while                           TK_WHILE                no        ----           
+18          (                               TK_OP                   no        ----           
+18          b5b567                          TK_ID                   no        ----           
+18          <=                              TK_LE                   no        ----           
+18          d5cc34                          TK_ID                   no        ----           
+18          )                               TK_CL                   no        ----           
+19          read                            TK_READ                 no        ----           
+19          (                               TK_OP                   no        ----           
+19          c3bd                            TK_ID                   no        ----           
+19          )                               TK_CL                   no        ----           
+19          ;                               TK_SEM                  no        ----           
+20          d3                              TK_ID                   no        ----           
+20          <---                            TK_ASSIGNOP             no        ----           
+20          d3                              TK_ID                   no        ----           
+20          +                               TK_PLUS                 no        ----           
+20          c3bd                            TK_ID                   no        ----           
+20          ;                               TK_SEM                  no        ----           
+21          b5b567                          TK_ID                   no        ----           
+21          <---                            TK_ASSIGNOP             no        ----           
+21          b5b567                          TK_ID                   no        ----           
+21          +                               TK_PLUS                 no        ----           
+21          1                               TK_NUM                  yes       1              
+21          ;                               TK_SEM                  no        ----           
+22          endwhile                        TK_ENDWHILE             no        ----           
+23          return                          TK_RETURN               no        ----           
+23          [                               TK_SQL                  no        ----           
+23          d3                              TK_ID                   no        ----           
+23          ]                               TK_SQR                  no        ----           
+23          ;                               TK_SEM                  no        ----           
+24          end                             TK_END                  no        ----           
+25          %                               TK_COMMENT              no        ----           
+26          %                               TK_COMMENT              no        ----           
+27          _main                           TK_MAIN                 no        ----           
+28          record                          TK_RECORD               no        ----           
+28          #one                            TK_RUID                 no        ----           
+29          type                            TK_TYPE                 no        ----           
+29          real                            TK_REAL                 no        ----           
+29          :                               TK_COLON                no        ----           
+29          x                               TK_FIELDID              no        ----           
+29          ;                               TK_SEM                  no        ----           
+30          type                            TK_TYPE                 no        ----           
+30          real                            TK_REAL                 no        ----           
+30          :                               TK_COLON                no        ----           
+30          y                               TK_FIELDID              no        ----           
+30          ;                               TK_SEM                  no        ----           
+31          endrecord                       TK_ENDRECORD            no        ----           
+32          definetype                      TK_DEFINETYPE           no        ----           
+32          record                          TK_RECORD               no        ----           
+32          #one                            TK_RUID                 no        ----           
+32          as                              TK_AS                   no        ----           
+32          #point                          TK_RUID                 no        ----           
+33          definetype                      TK_DEFINETYPE           no        ----           
+33          record                          TK_RECORD               no        ----           
+33          #two                            TK_RUID                 no        ----           
+33          as                              TK_AS                   no        ----           
+33          #line                           TK_RUID                 no        ----           
+34          union                           TK_UNION                no        ----           
+34          #four                           TK_RUID                 no        ----           
+35          type                            TK_TYPE                 no        ----           
+35          #line                           TK_RUID                 no        ----           
+35          :                               TK_COLON                no        ----           
+35          ln                              TK_FIELDID              no        ----           
+35          ;                               TK_SEM                  no        ----           
+36          type                            TK_TYPE                 no        ----           
+36          #point                          TK_RUID                 no        ----           
+36          :                               TK_COLON                no        ----           
+36          pt                              TK_FIELDID              no        ----           
+36          ;                               TK_SEM                  no        ----           
+37          type                            TK_TYPE                 no        ----           
+37          #traingle                       TK_RUID                 no        ----           
+37          :                               TK_COLON                no        ----           
+37          tr                              TK_FIELDID              no        ----           
+37          ;                               TK_SEM                  no        ----           
+38          endunion                        TK_ENDUNION             no        ----           
+39          definetype                      TK_DEFINETYPE           no        ----           
+39          record                          TK_RECORD               no        ----           
+39          #three                          TK_RUID                 no        ----           
+39          as                              TK_AS                   no        ----           
+39          #triangle                       TK_RUID                 no        ----           
+40          record                          TK_RECORD               no        ----           
+40          #three                          TK_RUID                 no        ----           
+41          type                            TK_TYPE                 no        ----           
+41          #line                           TK_RUID                 no        ----           
+41          :                               TK_COLON                no        ----           
+41          base                            TK_FIELDID              no        ----           
+41          ;                               TK_SEM                  no        ----           
+42          type                            TK_TYPE                 no        ----           
+42          #line                           TK_RUID                 no        ----           
+42          :                               TK_COLON                no        ----           
+42          height                          TK_FIELDID              no        ----           
+42          ;                               TK_SEM                  no        ----           
+43          endrecord                       TK_ENDRECORD            no        ----           
+44          definetype                      TK_DEFINETYPE           no        ----           
+44          union                           TK_UNION                no        ----           
+44          #four                           TK_RUID                 no        ----           
+44          as                              TK_AS                   no        ----           
+44          #shape                          TK_RUID                 no        ----           
+45          record                          TK_RECORD               no        ----           
+45          #variantrecord                  TK_RUID                 no        ----           
+46          type                            TK_TYPE                 no        ----           
+46          int                             TK_INT                  no        ----           
+46          :                               TK_COLON                no        ----           
+46          tag                             TK_FIELDID              no        ----           
+46          ;                               TK_SEM                  no        ----           
+47          type                            TK_TYPE                 no        ----           
+47          #shape                          TK_RUID                 no        ----           
+47          :                               TK_COLON                no        ----           
+47          s                               TK_FIELDID              no        ----           
+47          ;                               TK_SEM                  no        ----           
+48          endrecord                       TK_ENDRECORD            no        ----           
+50          type                            TK_TYPE                 no        ----           
+50          record                          TK_RECORD               no        ----           
+50          #variantrecord                  TK_RUID                 no        ----           
+50          :                               TK_COLON                no        ----           
+50          d4                              TK_ID                   no        ----           
+50          ;                               TK_SEM                  no        ----           
+51          type                            TK_TYPE                 no        ----           
+51          int                             TK_INT                  no        ----           
+51          :                               TK_COLON                no        ----           
+51          b5                              TK_ID                   no        ----           
+51          ;                               TK_SEM                  no        ----           
+52          type                            TK_TYPE                 no        ----           
+52          int                             TK_INT                  no        ----           
+52          :                               TK_COLON                no        ----           
+52          d5cb34567                       TK_ID                   no        ----           
+52          ;                               TK_SEM                  no        ----           
+53          type                            TK_TYPE                 no        ----           
+53          record                          TK_RECORD               no        ----           
+53          #variantrecord                  TK_RUID                 no        ----           
+53          :                               TK_COLON                no        ----           
+53          b5c6                            TK_ID                   no        ----           
+53          ;                               TK_SEM                  no        ----           
+54          b5c6                            TK_ID                   no        ----           
+54          <---                            TK_ASSIGNOP             no        ----           
+54          b5c6                            TK_ID                   no        ----           
+54          .                               TK_DOT                  no        ----           
+54          tag                             TK_FIELDID              no        ----           
+54          +                               TK_PLUS                 no        ----           
+54          d4                              TK_ID                   no        ----           
+54          .                               TK_DOT                  no        ----           
+54          s                               TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          ln                              TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          beginpoint                      TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          x                               TK_FIELDID              no        ----           
+54          -                               TK_MINUS                no        ----           
+54          b5c6                            TK_ID                   no        ----           
+54          .                               TK_DOT                  no        ----           
+54          s                               TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          tr                              TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          base                            TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          beginpoint                      TK_FIELDID              no        ----           
+54          .                               TK_DOT                  no        ----           
+54          y                               TK_FIELDID              no        ----           
+54          ;                               TK_SEM                  no        ----           
+55          b5                              TK_ID                   no        ----           
+55          <---                            TK_ASSIGNOP             no        ----           
+55          b5                              TK_ID                   no        ----           
+55          +                               TK_PLUS                 no        ----           
+55          1                               TK_NUM                  yes       1              
+55          ;                               TK_SEM                  no        ----           
+56          d4                              TK_ID                   no        ----           
+56          <---                            TK_ASSIGNOP             no        ----           
+56          b5c6                            TK_ID                   no        ----           
+56          /                               TK_DIV                  no        ----           
+56          d5cb34567                       TK_ID                   no        ----           
+56          ;                               TK_SEM                  no        ----           
+57          write                           TK_WRITE                no        ----           
+57          (                               TK_OP                   no        ----           
+57          d4                              TK_ID                   no        ----           
+57          )                               TK_CL                   no        ----           
+57          ;                               TK_SEM                  no        ----           
+58          write                           TK_WRITE                no        ----           
+58          (                               TK_OP                   no        ----           
+58          d4                              TK_ID                   no        ----           
+58          .                               TK_DOT                  no        ----           
+58          s                               TK_FIELDID              no        ----           
+58          .                               TK_DOT                  no        ----           
+58          ln                              TK_FIELDID              no        ----           
+58          .                               TK_DOT                  no        ----           
+58          beginpoint                      TK_FIELDID              no        ----           
+58          .                               TK_DOT                  no        ----           
+58          x                               TK_FIELDID              no        ----           
+58          )                               TK_CL                   no        ----           
+58          ;                               TK_SEM                  no        ----           
+59          write                           TK_WRITE                no        ----           
+59          (                               TK_OP                   no        ----           
+59          b5c6                            TK_ID                   no        ----           
+59          .                               TK_DOT                  no        ----           
+59          tag                             TK_FIELDID              no        ----           
+59          )                               TK_CL                   no        ----           
+59          ;                               TK_SEM                  no        ----           
+60          return                          TK_RETURN               no        ----           
+60          ;                               TK_SEM                  no        ----           
+61          end                             TK_END                  no        ----           
+Total tokens listed: 264
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

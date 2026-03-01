@@ -1,0 +1,180 @@
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ LEXICAL ANALYSIS 
+
+Line No.    Lexeme                          Token                   HasVal    Value          
+1           %                               TK_COMMENT              no        ----           
+2           %                               TK_COMMENT              no        ----           
+4           %                               TK_COMMENT              no        ----           
+5           _main                           TK_MAIN                 no        ----           
+5           input                           TK_INPUT                no        ----           
+5           _input                          TK_FUNID                no        ----           
+5           parameter                       TK_PARAMETER            no        ----           
+5           list                            TK_LIST                 no        ----           
+5           [                               TK_SQL                  no        ----           
+5           int                             TK_INT                  no        ----           
+5           c3                              TK_ID                   no        ----           
+5           ,                               TK_COMMA                no        ----           
+5           ]                               TK_SQR                  no        ----           
+5           output                          TK_OUTPUT               no        ----           
+5           [                               TK_SQL                  no        ----           
+5           real                            TK_REAL                 no        ----           
+5           c6                              TK_ID                   no        ----           
+5           ]                               TK_SQR                  no        ----           
+5           ;                               TK_SEM                  no        ----           
+5           _computeFunctionValue           TK_FUNID                no        ----           
+6           d4cbcd5677                      TK_ID                   no        ----           
+6           <---                            TK_ASSIGNOP             no        ----           
+6           (                               TK_OP                   no        ----           
+6           (                               TK_OP                   no        ----           
+6           c3                              TK_ID                   no        ----           
+6           +                               TK_PLUS                 no        ----           
+6           2                               TK_NUM                  yes       2              
+6           *                               TK_MUL                  no        ----           
+6           c4                              TK_ID                   no        ----           
+6           -                               TK_MINUS                no        ----           
+6           (                               TK_OP                   no        ----           
+6           c5                              TK_ID                   no        ----           
+6           -                               TK_MINUS                no        ----           
+6           5                               TK_NUM                  yes       5              
+6           )                               TK_CL                   no        ----           
+6           )                               TK_CL                   no        ----           
+6          Line 6	Error: Unknown Symbol <=>
+Line 6	Error: Unknown pattern <&&>
+Line 6	Error: Unknown Symbol <|>
+Line 6	Error: Unknown Symbol <|>
+Line 6	Error: Unknown Symbol <|>
+Line 7	Error: Unknown pattern <123.5>
+ /                               TK_DIV                  no        ----           
+6           4                               TK_NUM                  yes       4              
+6           ;                               TK_SEM                  no        ----           
+6           c4bbb                           TK_ID                   no        ----           
+6           <                               TK_LT                   no        ----           
+6           <=                              TK_LE                   no        ----           
+6           <=                              TK_LE                   no        ----           
+6           =                               TK_ERROR                ---       Unknown Symbol <=>
+6           <---                            TK_ASSIGNOP             no        ----           
+6           (                               TK_OP                   no        ----           
+6           d4cbcd5677                      TK_ID                   no        ----           
+6           -                               TK_MINUS                no        ----           
+6           2.35                            TK_RNUM                 yes       2.3500         
+6           +                               TK_PLUS                 no        ----           
+6           34.98E+23                       TK_RNUM                 yes       3498000000000000163577856.0000
+6           )                               TK_CL                   no        ----           
+6           *                               TK_MUL                  no        ----           
+6           /                               TK_DIV                  no        ----           
+6           &&                              TK_ERROR                ---       Unknown pattern <&&>
+6           |                               TK_ERROR                ---       Unknown Symbol <|>
+6           |                               TK_ERROR                ---       Unknown Symbol <|>
+6           |                               TK_ERROR                ---       Unknown Symbol <|>
+6           &&&                             TK_AND                  no        ----           
+6           ;                               TK_SEM                  no        ----           
+7           if                              TK_IF                   no        ----           
+7           +                               TK_PLUS                 no        ----           
+7           then                            TK_THEN                 no        ----           
+7           _AbC23                          TK_FUNID                no        ----           
+7           #new                            TK_RUID                 no        ----           
+7           123.5                           TK_ERROR                ---       Unknown pattern <123.5>
+7           .                               TK_DOT                  no        ----           
+7           34.54E-23                       TK_RNUM                 yes       0.0000         
+7           ;                               TK_SEM                  no        ----           
+7           else                            TK_ELSE                 no        ----           
+7           /                               TK_DIV                  no        ----           
+7           write                           TK_WRITE                no        ----           
+7           (                               TK_OP                   no        ----           
+7           c4bbb                           TK_ID                   no        ----           
+7           )                               TK_CL                   no        ----           
+7           ;                               TK_SEM                  no        ----           
+8           endif                           TK_ENDIF                no        ----           
+8           <                               TK_LT                   no        ----           
+8           type                            TK_TYPE                 no        ----           
+8           >=           Line 8	Error: Variable Identifier is longer than 20 characters.
+Line 9	Error: Unknown pattern <5000.7>
+Line 10	Error: Unknown Symbol <$>
+                   TK_GE                   no        ----           
+8           int                             TK_INT                  no        ----           
+8           :                               TK_COLON                no        ----           
+8           d5cb34567                       TK_ID                   no        ----           
+8           :                               TK_COLON                no        ----           
+8           global                          TK_GLOBAL               no        ----           
+8           _abc                            TK_FUNID                no        ----           
+8           !=                              TK_NE                   no        ----           
+8           ~                               TK_NOT                  no        ----           
+8           d4cbcccccccccccccbbbbbbbbdddd5222222222222633333333333377  TK_ERROR                ---       Variable Identifier is longer than 20 characters.
+8           ~                               TK_NOT                  no        ----           
+8           ;                               TK_SEM                  no        ----           
+9           5000.7                          TK_ERROR                ---       Unknown pattern <5000.7>
+9           +                               TK_PLUS                 no        ----           
+9           2543.23E45                      TK_RNUM                 yes       2543230000000000083820517816623
+9           -                               TK_MINUS                no        ----           
+9           432                             TK_NUM                  yes       432            
+9           +                               TK_PLUS                 no        ----           
+9           343333.55E-12                   TK_RNUM                 yes       0.0000         
+9           4                               TK_NUM                  yes       4              
+9           ;                               TK_SEM                  no        ----           
+10          $                               TK_ERROR                ---       Unknown Symbol <$>
+10          real                            TK_REAL                 no        ----           
+10          :                               TK_COLON                no        ----           
+10          c3                              TK_ID                   no        ----           
+10          ;                               TK_SEM                  no        ----           
+11          [                               TK_SQL                  no        ----           
+11          c3                              TK_ID                   no        ----           
+11          ]                               TK_SQR                  no        ----           
+11          <---                            TK_ASSIGNOP             no        ----           
+11          call                            TK_CALL                 no        ----           
+11          _computeFunctionValue           TK_FUNID                no        ----           
+11          with                            TK_WITH                 no        ----           
+11          parameters                      TK_PARAMETERS           no        ----           
+11          [                               TK_SQL                  no        ----           
+11          listb                           TK_FIELDID              no        ----           
+11          5                               TK_NUM                  yes       5              
+11          ,                               TK_COMMA                no        ----           
+11          d5cb34567                       TK_ID                   no        ----           
+11          ,                               TK_COMMA                no        ----           
+11          b3b444                          TK_ID                   no        ----           
+11          ]                               TK_SQR                  no        ----           
+11          ;                               TK_SEM                  no        ----           
+12          write                           TK_WRITE                no        ----           
+12          (                               TK_OP                   no        ----           
+12          c3                              TK_ID                   no        ----           
+12          )                               TK_CL                   no        ----           
+12          ;                               TK_SEM                  no        ----           
+13          return                          TK_RETURN               no        ----           
+13          ;                               TK_SEM                  no        ----           
+13          union                           TK_UNION                no        ----           
+13          /                               TK_DIV                  no        ----           
+13          /                               TK_DIV                  no        ----           
+13          record                          TK_RECORD               no        ----           
+13          +                               TK_PLUS                 no        ----           
+13          endrecorb                       TK_FIELDID              no        ----           
+13          2                               TK_NUM                  yes       2              
+13          c3                              TK_ID                   no        ----           
+13          endrecord                       TK_ENDRECORD            no        ----           
+14          end                             TK_END                  no        ----           
+Total tokens listed: 139
+Total lexical errors: 9  (details on stderr)
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!

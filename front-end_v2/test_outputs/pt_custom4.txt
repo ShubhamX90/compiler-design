@@ -1,0 +1,20 @@
+lexeme                CurrentNode                     lineno  tokenName               valueIfNumber  parentNodeSymbol                isLeafNode(yes/no)  NodeSymbol
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+----                  EPS                             ----    EPS                     ----          otherFunctions                  yes                 ----
+----                  otherFunctions                  ----    ----                    ----          program                         no                  otherFunctions
+----                  program                         ----    ----                    ----          ROOT                            no                  program
+_main                 TK_MAIN                         1       TK_MAIN                 ----          mainFunction                    yes                 ----
+----                  mainFunction                    ----    ----                    ----          program                         no                  mainFunction
+----                  EPS                             ----    EPS                     ----          typeDefinitions                 yes                 ----
+----                  typeDefinitions                 ----    ----                    ----          stmts                           no                  typeDefinitions
+----                  stmts                           ----    ----                    ----          mainFunction                    no                  stmts
+----                  EPS                             ----    EPS                     ----          declarations                    yes                 ----
+----                  declarations                    ----    ----                    ----          stmts                           no                  declarations
+----                  EPS                             ----    EPS                     ----          otherStmts                      yes                 ----
+----                  otherStmts                      ----    ----                    ----          stmts                           no                  otherStmts
+return                TK_RETURN                       1       TK_RETURN               ----          returnStmt                      yes                 ----
+----                  returnStmt                      ----    ----                    ----          stmts                           no                  returnStmt
+----                  EPS                             ----    EPS                     ----          optionalReturn                  yes                 ----
+----                  optionalReturn                  ----    ----                    ----          returnStmt                      no                  optionalReturn
+;                     TK_SEM                          1       TK_SEM                  ----          returnStmt                      yes                 ----
+end                   TK_END                          2       TK_END                  ----          mainFunction                    yes                 ----

@@ -1,0 +1,65 @@
+Line 6	Error: Invalid token TK_ID encountered with value b2b2 stack top global_or_not>
+Line 9	Error: The token TK_FIELDID for lexeme a  does not match with the expected token TK_ID
+Line 10	Error: The token TK_FIELDID for lexeme z  does not match with the expected token TK_ID
+Line 13	Error: Function identifier exceeds max length of 30 characters.
+Line 13	Error: The token TK_WITH for lexeme with  does not match with the expected token TK_FUNID
+Line 16	Error: Unknown pattern <12.3>
+Line 16	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 17	Error: Invalid token TK_NUM encountered with value 5 stack top termPrime>
+Line 18	Error: 12.34E
+Line 18	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 19	Error: Unknown pattern <12.34E+1>
+Line 19	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 20	Error: 12.34E-
+Line 20	Error: Invalid token TK_SEM encountered with value ; stack top arithmeticExpression>
+Line 23	Error: Unknown pattern <<-->
+Line 23	Error: Invalid token TK_NUM encountered with value 10 stack top option_single_constructed>
+Line 24	Error: <-
+Line 24	Error: Invalid token TK_NUM encountered with value 5 stack top option_single_constructed>
+Line 27	Error: Unknown pattern <&&>
+Line 27	Error: The token TK_ID for lexeme b5  does not match with the expected token TK_CL
+Line 31	Error: Unknown pattern <@@>
+Line 31	Error: The token TK_ID for lexeme b5  does not match with the expected token TK_CL
+Line 36	Error: Unknown Symbol <!>
+Line 36	Error: Invalid token TK_NUM encountered with value 2 stack top termPrime>
+Line 37	Error: Unknown Symbol <|>
+Line 37	Error: Invalid token TK_NUM encountered with value 2 stack top termPrime>
+Line 38	Error: Invalid token TK_TYPE encountered with value type stack top otherStmts>
+Line 38	Error: Unknown Symbol <$>
+
+ IMPLEMENTATION STATUS 
+(a) FIRST and FOLLOW set automated:              YES
+(b) Only Lexical analyzer module developed:      NO
+(c) Both lexical and syntax analysis modules:    YES
+(d) Modules compile and run:                     YES
+(e) Modules work with all given test cases:      YES
+(f) Parse tree constructed:                      YES
+COMPILER FRONT-END
+
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+ SYNTAX ANALYSIS 
+Initializing grammar...
+Grammar initialized with 95 rules.
+Computing FIRST and FOLLOW sets...
+FIRST and FOLLOW sets computed.
+Building predictive parse table...
+Parse table ready.
+
+Parsing: lexer_test_cases/custom2.txt
+Parse tree written to test_outputs/pt_custom2.txt
+
+Press Enter to continue...
+ MENU 
+0 : Exit
+1 : Remove comments and print clean code on console
+2 : Print token list (lexical analysis)
+3 : Parse and verify syntax (produces parse tree file)
+4 : Print total time taken by lexer and parser
+Enter option: 
+Thank you for using our compiler!
