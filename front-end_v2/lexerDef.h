@@ -1,9 +1,3 @@
-/**
- * lexerDef.h
- * Contains all data definitions and structures used by the lexical analyzer
- * CS F363 Compiler Design Project
- */
-
 #ifndef LEXERDEF_H
 #define LEXERDEF_H
 
@@ -12,12 +6,10 @@
 #include <string.h>
 #include <ctype.h>
 
-/* Buffer size for twin buffer implementation */
 #define BUFFER_SIZE 4096
 #define TWIN_BUFFER_SIZE (2 * BUFFER_SIZE)
 #define MAX_LEXEME_LENGTH 256
 
-/* Token type enumeration - based on Table 1 in language specification */
 typedef enum {
     TK_ASSIGNOP,    // <---
     TK_COMMENT,     // %
@@ -81,7 +73,6 @@ typedef enum {
     TK_EPSILON      // For grammar purposes
 } TokenType;
 
-/* Structure to hold token information */
 typedef struct {
     TokenType tokenType;
     char lexeme[MAX_LEXEME_LENGTH];
@@ -90,29 +81,26 @@ typedef struct {
         int intValue;
         double realValue;
     } value;
-    int hasValue;           /* Flag to indicate if value is present */
-    int errorType;          /* LexErrorType — valid when tokenType == TK_ERROR */
-    char errorMsg[256];     /* Human-readable error description */
+    int hasValue;
+    int errorType;
+    char errorMsg[256];
 } tokenInfo;
 
-/* Twin buffer structure for efficient input handling */
 typedef struct {
-    char buffer[TWIN_BUFFER_SIZE + 1];  // +1 for EOF markers
-    int forward;                         // Forward pointer
-    int lexemeBegin;                     // Beginning of current lexeme
-    int currentBuffer;                   // 0 or 1 for left/right buffer
-    FILE *fp;                           // File pointer
-    int eof1, eof2;                     // EOF markers for each half
-    int lineNumber;                      // Current line number
+    char buffer[TWIN_BUFFER_SIZE + 1];
+    int forward;
+    int lexemeBegin;
+    int currentBuffer;
+    FILE *fp;
+    int eof1, eof2;
+    int lineNumber;
 } twinBuffer;
 
-/* Keyword structure for lookup table */
 typedef struct {
     char *keyword;
     TokenType token;
 } KeywordEntry;
 
-/* DFA states - based on DFA design document */
 typedef enum {
     S0,   // Start state
     S1,   // Whitespace
@@ -181,19 +169,17 @@ typedef enum {
     A_ERR_LTDOUBLE
 } DFAState;
 
-/* Error message structure */
 typedef struct {
     int lineNumber;
     char message[256];
 } LexError;
 
-/* Error sub-type for TK_ERROR tokens — gives the parser/driver richer info */
 typedef enum {
     ERR_NONE = 0,
-    ERR_UNKNOWN_SYMBOL,    /* single unrecognised character, e.g. $ @ | */
-    ERR_UNKNOWN_PATTERN,   /* multi-char bad pattern, e.g. <--, 5000.7, && */
-    ERR_ID_TOO_LONG,       /* variable identifier > 20 chars */
-    ERR_FUNID_TOO_LONG     /* function identifier > 30 chars */
+    ERR_UNKNOWN_SYMBOL,
+    ERR_UNKNOWN_PATTERN,
+    ERR_ID_TOO_LONG,
+    ERR_FUNID_TOO_LONG
 } LexErrorType;
 
-#endif /* LEXERDEF_H */
+#endif
