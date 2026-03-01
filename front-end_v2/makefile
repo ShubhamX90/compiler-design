@@ -27,10 +27,6 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Test lexer executable
-$(TEST_LEXER): test_lexer.o lexer.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
 # Compile source files to object files
 driver.o: driver.c lexer.h parser.h
 	$(CC) $(CFLAGS) -c $<
@@ -39,9 +35,6 @@ lexer.o: lexer.c lexer.h lexerDef.h
 	$(CC) $(CFLAGS) -c $<
 
 parser.o: parser.c parser.h parserDef.h lexer.h lexerDef.h
-	$(CC) $(CFLAGS) -c $<
-
-test_lexer.o: test_lexer.c lexer.h lexerDef.h
 	$(CC) $(CFLAGS) -c $<
 
 # Clean build artifacts
@@ -57,13 +50,13 @@ test: $(TARGET)
 	./$(TARGET) testcase.txt parsetree.txt
 
 # Run lexer tests
-test-lexer: $(TEST_LEXER)
+test-lexer: $(TARGET)
 	@echo ""
 	@echo "========== Lexer Test: t1.txt =========="
-	./$(TEST_LEXER) lexer_test_cases/t1.txt
+	@echo "2" | ./$(TARGET) lexer_test_cases/t1.txt
 	@echo ""
 	@echo "========== Lexer Test: t2.txt =========="
-	./$(TEST_LEXER) lexer_test_cases/t2.txt
+	@echo "2" | ./$(TARGET) lexer_test_cases/t2.txt
 
 # Run parser tests
 test-parser: $(TARGET)
