@@ -42,7 +42,6 @@ twinBuffer *initializeTwinBuffer(FILE *fp) {
     fprintf(stderr, "Error: malloc failed for twin buffer\n");
     exit(1);
   }
-
   tb->fp = fp;
   tb->forward = 0;
   tb->lexemeBegin = 0;
@@ -50,19 +49,16 @@ twinBuffer *initializeTwinBuffer(FILE *fp) {
   tb->eof2 = 0;
   tb->lineNumber = 1;
   memset(tb->buffer, 0, sizeof(tb->buffer));
-
   size_t n = fread(tb->buffer, 1, BUFFER_SIZE, fp);
   if (n < BUFFER_SIZE) {
     tb->buffer[n] = (char)EOF;
     tb->eof1 = 1;
   }
-
   n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, fp);
   if (n < BUFFER_SIZE) {
     tb->buffer[BUFFER_SIZE + n] = (char)EOF;
     tb->eof2 = 1;
   }
-
   return tb;
 }
 
@@ -137,19 +133,16 @@ tokenInfo getNextToken(twinBuffer *tb) {
   tokenInfo token;
   memset(&token, 0, sizeof(token));
   char c;
-
-restart:
+  restart:
   tb->lexemeBegin = tb->forward;
   int startLine = tb->lineNumber;
   c = getNextChar(tb);
-
   if ((unsigned char)c == (unsigned char)EOF) {
     token.tokenType = TK_EOF;
     token.lineNumber = startLine;
     strcpy(token.lexeme, "EOF");
     return token;
   }
-
   if (isWS(c)) {
     while (isWS(c))
       c = getNextChar(tb);
@@ -280,8 +273,7 @@ restart:
     } else {
       token.tokenType = TK_ERROR;
       token.errorType = ERR_FUNID_TOO_LONG;
-      snprintf(token.errorMsg, sizeof(token.errorMsg),
-               "Function identifier exceeds max length of 30 characters.");
+      snprintf(token.errorMsg, sizeof(token.errorMsg),"Function identifier exceeds max length of 30 characters.");
     }
     token.lineNumber = startLine;
     return token;
@@ -324,8 +316,7 @@ restart:
         } else {
           token.tokenType = TK_ERROR;
           token.errorType = ERR_ID_TOO_LONG;
-          snprintf(token.errorMsg, sizeof(token.errorMsg),
-                   "Variable Identifier is longer than the prescribed length of 20 characters.");
+          snprintf(token.errorMsg, sizeof(token.errorMsg),"Variable Identifier is longer than the prescribed length of 20 characters.");
         }
         token.lineNumber = startLine;
         return token;
@@ -584,7 +575,6 @@ void removeComments(char *testcaseFile, char *cleanFile) {
     fclose(in);
     return;
   }
-
   int ch, inComment = 0;
   while ((ch = fgetc(in)) != EOF) {
     if (ch == '%')
