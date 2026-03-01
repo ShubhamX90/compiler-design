@@ -366,7 +366,6 @@ tokenInfo getNextToken(twinBuffer *tb) {
           return token;
         }
       } else {
-        retract(tb, 1);
         token.tokenType = TK_ERROR;
         strcpy(token.lexeme, "<-");
         token.lineNumber = startLine;
