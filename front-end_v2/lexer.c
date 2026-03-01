@@ -299,58 +299,34 @@ tokenInfo getNextToken(twinBuffer *tb) {
   }
   if (isBD(c)) {
     c = getNextChar(tb);
-    if (isD27(c)) {
-      c = getNextChar(tb);
-      while (isBD(c))
+    if (isD27(c)) { 
         c = getNextChar(tb);
-      while (isD27(c))
-        c = getNextChar(tb);
-      if (!isLOW(c) && !isDIG(c)) {
+        while (isBD(c))
+            c = getNextChar(tb);
+        while (isD27(c))
+            c = getNextChar(tb);
         if ((unsigned char)c != (unsigned char)EOF)
-          retract(tb, 1);
+            retract(tb, 1);
         getLexeme(tb, token.lexeme);
         int len = (int)strlen(token.lexeme);
         if (len >= 2 && len <= 20) {
-          token.tokenType = TK_ID;
+            token.tokenType = TK_ID;
         } else {
-          token.tokenType = TK_ERROR;
-          token.errorType = ERR_ID_TOO_LONG;
-          snprintf(token.errorMsg, sizeof(token.errorMsg),"Variable Identifier is longer than the prescribed length of 20 characters.");
+            token.tokenType = TK_ERROR;
+            token.errorType = ERR_ID_TOO_LONG;
+            snprintf(token.errorMsg, sizeof(token.errorMsg), "Variable Identifier is longer than 20 characters.");
         }
         token.lineNumber = startLine;
         return token;
-      } else {
-        if (!isBD(c)){
-          retract(tb, 1);
-          getLexeme(tb, token.lexeme);
-          token.tokenType = lookupKeyword(token.lexeme);
-          token.lineNumber = startLine;
-          return token;
-        }
+    } else {
         while (isLOW(c))
-          c = getNextChar(tb);
+            c = getNextChar(tb);
         if ((unsigned char)c != (unsigned char)EOF)
-          retract(tb, 1);
+            retract(tb, 1);
         getLexeme(tb, token.lexeme);
         token.tokenType = lookupKeyword(token.lexeme);
         token.lineNumber = startLine;
         return token;
-      }
-    } else if (isLOW(c)) {
-      while (isLOW(c))
-        c = getNextChar(tb);
-      if ((unsigned char)c != (unsigned char)EOF)
-        retract(tb, 1);
-      getLexeme(tb, token.lexeme);
-      token.tokenType = lookupKeyword(token.lexeme);
-      token.lineNumber = startLine;
-      return token;
-    } else {
-      retract(tb, 1);
-      getLexeme(tb, token.lexeme);
-      token.tokenType = lookupKeyword(token.lexeme);
-      token.lineNumber = startLine;
-      return token;
     }
   }
   if (isLOW(c)) {
