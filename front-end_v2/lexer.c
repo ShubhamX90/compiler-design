@@ -33,12 +33,8 @@ static inline int isDIG(char c) { return c >= '0' && c <= '9'; }
 static inline int isD27(char c) { return c >= '2' && c <= '7'; }
 static inline int isLOW(char c) { return c >= 'a' && c <= 'z'; }
 static inline int isBD(char c) { return c == 'b' || c == 'c' || c == 'd'; }
-static inline int isLET(char c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
-static inline int isWS(char c) {
-  return c == ' ' || c == '\t' || c == '\n' || c == '\r';
-}
+static inline int isLET(char c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }
+static inline int isWS(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
 
 twinBuffer *initializeTwinBuffer(FILE *fp) {
   twinBuffer *tb = (twinBuffer *)malloc(sizeof(twinBuffer));
@@ -80,7 +76,8 @@ char getNextChar(twinBuffer *tb) {
       tb->buffer[n] = (char)EOF;
       tb->eof1 = 1;
     }
-  } else if (tb->forward == TWIN_BUFFER_SIZE) {
+  }
+  else if (tb->forward == TWIN_BUFFER_SIZE) {
     if (!tb->eof2) {
       size_t n = fread(tb->buffer + BUFFER_SIZE, 1, BUFFER_SIZE, tb->fp);
       if (n < BUFFER_SIZE) {
@@ -136,7 +133,7 @@ tokenInfo getNextToken(twinBuffer *tb) {
   tokenInfo token;
   memset(&token, 0, sizeof(token));
   char c;
-restart:
+  restart:
   tb->lexemeBegin = tb->forward;
   int startLine = tb->lineNumber;
   c = getNextChar(tb);
@@ -275,8 +272,7 @@ restart:
     } else {
       token.tokenType = TK_ERROR;
       token.errorType = ERR_FUNID_TOO_LONG;
-      snprintf(token.errorMsg, sizeof(token.errorMsg),
-               "Function identifier exceeds max length of 30 characters.");
+      snprintf(token.errorMsg, sizeof(token.errorMsg),"Function identifier exceeds max length of 30 characters.");
     }
     token.lineNumber = startLine;
     return token;
@@ -303,35 +299,34 @@ restart:
   }
   if (isBD(c)) {
     c = getNextChar(tb);
-    if (isD27(c)) {
-      c = getNextChar(tb);
-      while (isBD(c))
+    if (isD27(c)) { 
         c = getNextChar(tb);
-      while (isD27(c))
-        c = getNextChar(tb);
-      if ((unsigned char)c != (unsigned char)EOF)
-        retract(tb, 1);
-      getLexeme(tb, token.lexeme);
-      int len = (int)strlen(token.lexeme);
-      if (len >= 2 && len <= 20) {
-        token.tokenType = TK_ID;
-      } else {
-        token.tokenType = TK_ERROR;
-        token.errorType = ERR_ID_TOO_LONG;
-        snprintf(token.errorMsg, sizeof(token.errorMsg),
-                 "Variable Identifier is longer than 20 characters.");
-      }
-      token.lineNumber = startLine;
-      return token;
+        while (isBD(c))
+            c = getNextChar(tb);
+        while (isD27(c))
+            c = getNextChar(tb);
+        if ((unsigned char)c != (unsigned char)EOF)
+            retract(tb, 1);
+        getLexeme(tb, token.lexeme);
+        int len = (int)strlen(token.lexeme);
+        if (len >= 2 && len <= 20) {
+            token.tokenType = TK_ID;
+        } else {
+            token.tokenType = TK_ERROR;
+            token.errorType = ERR_ID_TOO_LONG;
+            snprintf(token.errorMsg, sizeof(token.errorMsg), "Variable Identifier is longer than 20 characters.");
+        }
+        token.lineNumber = startLine;
+        return token;
     } else {
-      while (isLOW(c))
-        c = getNextChar(tb);
-      if ((unsigned char)c != (unsigned char)EOF)
-        retract(tb, 1);
-      getLexeme(tb, token.lexeme);
-      token.tokenType = lookupKeyword(token.lexeme);
-      token.lineNumber = startLine;
-      return token;
+        while (isLOW(c))
+            c = getNextChar(tb);
+        if ((unsigned char)c != (unsigned char)EOF)
+            retract(tb, 1);
+        getLexeme(tb, token.lexeme);
+        token.tokenType = lookupKeyword(token.lexeme);
+        token.lineNumber = startLine;
+        return token;
     }
   }
   if (isLOW(c)) {
@@ -371,14 +366,9 @@ restart:
           return token;
         }
       } else {
-        // <- is not a valid token; report as unknown pattern
-        if ((unsigned char)c != (unsigned char)EOF)
-          retract(tb, 1);
-        getLexeme(tb, token.lexeme);
+        retract(tb, 1);
         token.tokenType = TK_ERROR;
-        token.errorType = ERR_UNKNOWN_PATTERN;
-        snprintf(token.errorMsg, sizeof(token.errorMsg), "Unknown pattern <%s>",
-                 token.lexeme);
+        strcpy(token.lexeme, "<-");
         token.lineNumber = startLine;
         return token;
       }
@@ -546,8 +536,8 @@ restart:
     break;
   default:
     token.tokenType = TK_ERROR;
-    token.errorType = ERR_UNKNOWN_PATTERN;
-    snprintf(token.errorMsg, sizeof(token.errorMsg), "Unknown pattern <%c>", c);
+    token.errorType = ERR_UNKNOWN_SYMBOL;
+    snprintf(token.errorMsg, sizeof(token.errorMsg), "Unknown Symbol <%c>", c);
     snprintf(token.lexeme, sizeof(token.lexeme), "%c", c);
     break;
   }
