@@ -1,34 +1,10 @@
-/**
- * parser.c
- * LL(1) Predictive Parser
- * CS F363 Compiler Design Project - BITS Pilani
- *
- * Grammar updated per "Modified LL(1) Grammar.pdf" (Feb 13, 2026):
- *
- *  Rule 10-a  : constructedDatatype → TK_RUID alternative added
- *  Rule 13-a/b: typeDefinitions uses <actualOrRedefined>
- *  Rule 17-a  : fieldDefinition uses <fieldType>
- *  Rule 20    : declaration uses single TK_COLON (not double)
- *  Rule 21    : global_or_not → TK_COLON TK_GLOBAL | eps
- *  Rule 25-c/d/e/f: singleOrRecId supports arbitrary dot expansions
- *  Rule 26    : funCallStmt ends with TK_SEM
- *  Rule 30-a  : conditionalStmt uses <elsePart>
- *  Rule 31-a  : elsePart → TK_ELSE <stmt><otherStmts> TK_ENDIF | TK_ENDIF
- *  Rule 38-a  : booleanExpression NOT uses parentheses
- *  Rule 39-a  : var → <singleOrRecId> | TK_NUM | TK_RNUM
- *  Rules B1–B7: Arithmetic with proper operator precedence
- *  Rule 46    : definetypestmt integrated via actualOrRedefined
- */
-
 #include "parser.h"
 #include "parserDef.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/* -----------------------------------------------
- * Non-terminal name lookup
- * ----------------------------------------------- */
+
 const char *getNonTerminalName(NonTerminal nt) {
   switch (nt) {
   case NT_PROGRAM:
@@ -142,9 +118,7 @@ const char *getNonTerminalName(NonTerminal nt) {
   }
 }
 
-/* -----------------------------------------------
- * Grammar construction helpers (macros)
- * ----------------------------------------------- */
+
 static grammar *G_global;
 
 #define START_RULE(nt)                                                         \
@@ -173,10 +147,7 @@ static grammar *G_global;
   while (0)
 #define EPS() T(TK_EPSILON)
 
-/* -----------------------------------------------
- * initializeGrammar()
- * Complete LL(1)-compatible grammar per spec + modifications.
- * ----------------------------------------------- */
+
 grammar *initializeGrammar(void) {
   grammar *G = (grammar *)malloc(sizeof(grammar));
   if (!G) {
@@ -187,32 +158,26 @@ grammar *initializeGrammar(void) {
   G->startSymbol = NT_PROGRAM;
   G_global = G;
 
-  /* -------- 1. <program> → <otherFunctions> <mainFunction> -------- */
   START_RULE(NT_PROGRAM);
   NT(NT_OTHERFUNCTIONS);
   NT(NT_MAINFUNCTION);
   END_RULE();
 
-  /* -------- 2. <mainFunction> → TK_MAIN <stmts> TK_END -------- */
   START_RULE(NT_MAINFUNCTION);
   T(TK_MAIN);
   NT(NT_STMTS);
   T(TK_END);
   END_RULE();
 
-  /* -------- 3. <otherFunctions> → <function> <otherFunctions> -------- */
   START_RULE(NT_OTHERFUNCTIONS);
   NT(NT_FUNCTION);
   NT(NT_OTHERFUNCTIONS);
   END_RULE();
 
-  /* -------- 4. <otherFunctions> → ε -------- */
   START_RULE(NT_OTHERFUNCTIONS);
   EPS();
   END_RULE();
 
-  /* -------- 5. <function> → TK_FUNID <input_par> <output_par> TK_SEM <stmts>
-   * TK_END -------- */
   START_RULE(NT_FUNCTION);
   T(TK_FUNID);
   NT(NT_INPUT_PAR);
@@ -222,8 +187,6 @@ grammar *initializeGrammar(void) {
   T(TK_END);
   END_RULE();
 
-  /* -------- 6. <input_par> → TK_INPUT TK_PARAMETER TK_LIST TK_SQL
-   * <parameter_list> TK_SQR -------- */
   START_RULE(NT_INPUT_PAR);
   T(TK_INPUT);
   T(TK_PARAMETER);
@@ -233,8 +196,6 @@ grammar *initializeGrammar(void) {
   T(TK_SQR);
   END_RULE();
 
-  /* -------- 7. <output_par> → TK_OUTPUT TK_PARAMETER TK_LIST TK_SQL
-   * <parameter_list> TK_SQR -------- */
   START_RULE(NT_OUTPUT_PAR);
   T(TK_OUTPUT);
   T(TK_PARAMETER);
@@ -244,21 +205,16 @@ grammar *initializeGrammar(void) {
   T(TK_SQR);
   END_RULE();
 
-  /* -------- 8. <output_par> → ε -------- */
   START_RULE(NT_OUTPUT_PAR);
   EPS();
   END_RULE();
 
-  /* -------- 9. <parameter_list> → <dataType> TK_ID <remaining_list> --------
-   */
   START_RULE(NT_PARAMETER_LIST);
   NT(NT_DATATYPE);
   T(TK_ID);
   NT(NT_REMAINING_LIST);
   END_RULE();
 
-  /* -------- 10. <dataType> → <primitiveDatatype> | <constructedDatatype>
-   * -------- */
   START_RULE(NT_DATATYPE);
   NT(NT_PRIMITIVEDATATYPE);
   END_RULE();
@@ -266,7 +222,6 @@ grammar *initializeGrammar(void) {
   NT(NT_CONSTRUCTEDDATATYPE);
   END_RULE();
 
-  /* -------- 11. <primitiveDatatype> → TK_INT | TK_REAL -------- */
   START_RULE(NT_PRIMITIVEDATATYPE);
   T(TK_INT);
   END_RULE();
@@ -274,8 +229,6 @@ grammar *initializeGrammar(void) {
   T(TK_REAL);
   END_RULE();
 
-  /* -------- 10-a. <constructedDatatype> → TK_RECORD TK_RUID | TK_UNION TK_RUID
-   * | TK_RUID -------- */
   START_RULE(NT_CONSTRUCTEDDATATYPE);
   T(TK_RECORD);
   T(TK_RUID);
@@ -288,7 +241,6 @@ grammar *initializeGrammar(void) {
   T(TK_RUID);
   END_RULE();
 
-  /* -------- 11. <remaining_list> → TK_COMMA <parameter_list> | ε -------- */
   START_RULE(NT_REMAINING_LIST);
   T(TK_COMMA);
   NT(NT_PARAMETER_LIST);
@@ -297,8 +249,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 12. <stmts> → <typeDefinitions> <declarations> <otherStmts>
-   * <returnStmt> -------- */
   START_RULE(NT_STMTS);
   NT(NT_TYPEDEFINITIONS);
   NT(NT_DECLARATIONS);
@@ -306,8 +256,6 @@ grammar *initializeGrammar(void) {
   NT(NT_RETURNSTMT);
   END_RULE();
 
-  /* -------- 13-a. <typeDefinitions> → <actualOrRedefined> <typeDefinitions> |
-   * ε -------- */
   START_RULE(NT_TYPEDEFINITIONS);
   NT(NT_ACTUALORREDEFINED);
   NT(NT_TYPEDEFINITIONS);
@@ -316,8 +264,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 13-b. <actualOrRedefined> → <typeDefinition> | <definetypestmt>
-   * -------- */
   START_RULE(NT_ACTUALORREDEFINED);
   NT(NT_TYPEDEFINITION);
   END_RULE();
@@ -325,8 +271,6 @@ grammar *initializeGrammar(void) {
   NT(NT_DEFINETYPESTMT);
   END_RULE();
 
-  /* -------- 14. <typeDefinition> → TK_RECORD TK_RUID <fieldDefinitions>
-   * TK_ENDRECORD -------- */
   START_RULE(NT_TYPEDEFINITION);
   T(TK_RECORD);
   T(TK_RUID);
@@ -334,8 +278,6 @@ grammar *initializeGrammar(void) {
   T(TK_ENDRECORD);
   END_RULE();
 
-  /* -------- 15. <typeDefinition> → TK_UNION TK_RUID <fieldDefinitions>
-   * TK_ENDUNION -------- */
   START_RULE(NT_TYPEDEFINITION);
   T(TK_UNION);
   T(TK_RUID);
@@ -343,16 +285,12 @@ grammar *initializeGrammar(void) {
   T(TK_ENDUNION);
   END_RULE();
 
-  /* -------- 16. <fieldDefinitions> → <fieldDefinition> <fieldDefinition>
-   * <moreFields> -------- */
   START_RULE(NT_FIELDDEFINITIONS);
   NT(NT_FIELDDEFINITION);
   NT(NT_FIELDDEFINITION);
   NT(NT_MOREFIELDS);
   END_RULE();
 
-  /* -------- 17-a. <fieldDefinition> → TK_TYPE <fieldType> TK_COLON TK_FIELDID
-   * TK_SEM -------- */
   START_RULE(NT_FIELDDEFINITION);
   T(TK_TYPE);
   NT(NT_FIELDTYPE);
@@ -361,7 +299,6 @@ grammar *initializeGrammar(void) {
   T(TK_SEM);
   END_RULE();
 
-  /* -------- 17-a. <fieldType> → <primitiveDatatype> | TK_RUID -------- */
   START_RULE(NT_FIELDTYPE);
   NT(NT_PRIMITIVEDATATYPE);
   END_RULE();
@@ -369,7 +306,6 @@ grammar *initializeGrammar(void) {
   T(TK_RUID);
   END_RULE();
 
-  /* -------- 18. <moreFields> → <fieldDefinition> <moreFields> | ε -------- */
   START_RULE(NT_MOREFIELDS);
   NT(NT_FIELDDEFINITION);
   NT(NT_MOREFIELDS);
@@ -378,7 +314,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 19. <declarations> → <declaration> <declarations> | ε -------- */
   START_RULE(NT_DECLARATIONS);
   NT(NT_DECLARATION);
   NT(NT_DECLARATIONS);
@@ -387,10 +322,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 20. <declaration> → TK_TYPE <dataType> TK_COLON TK_ID
-   * <global_or_not> TK_SEM -------- */
-  /*  NOTE: Only ONE colon before TK_ID; colon before TK_GLOBAL moved to
-   * global_or_not (rule 21) */
   START_RULE(NT_DECLARATION);
   T(TK_TYPE);
   NT(NT_DATATYPE);
@@ -400,7 +331,6 @@ grammar *initializeGrammar(void) {
   T(TK_SEM);
   END_RULE();
 
-  /* -------- 21. <global_or_not> → TK_COLON TK_GLOBAL | ε -------- */
   START_RULE(NT_GLOBAL_OR_NOT);
   T(TK_COLON);
   T(TK_GLOBAL);
@@ -409,7 +339,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 22. <otherStmts> → <stmt> <otherStmts> | ε -------- */
   START_RULE(NT_OTHERSTMTS);
   NT(NT_STMT);
   NT(NT_OTHERSTMTS);
@@ -418,7 +347,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 23. <stmt> → one of 5 alternatives -------- */
   START_RULE(NT_STMT);
   NT(NT_ASSIGNMENTSTMT);
   END_RULE();
@@ -435,8 +363,6 @@ grammar *initializeGrammar(void) {
   NT(NT_FUNCALLSTMT);
   END_RULE();
 
-  /* -------- 24. <assignmentStmt> → <singleOrRecId> TK_ASSIGNOP
-   * <arithmeticExpression> TK_SEM -------- */
   START_RULE(NT_ASSIGNMENTSTMT);
   NT(NT_SINGLEORRECID);
   T(TK_ASSIGNOP);
@@ -444,15 +370,11 @@ grammar *initializeGrammar(void) {
   T(TK_SEM);
   END_RULE();
 
-  /* -------- 25-e. <singleOrRecId> → TK_ID <option_single_constructed> --------
-   */
   START_RULE(NT_SINGLEORRECID);
   T(TK_ID);
   NT(NT_OPTION_SINGLE_CONSTRUCTED);
   END_RULE();
 
-  /* -------- 25-f. <option_single_constructed> → ε | <oneExpansion>
-   * <moreExpansions> -------- */
   START_RULE(NT_OPTION_SINGLE_CONSTRUCTED);
   EPS();
   END_RULE();
@@ -461,14 +383,11 @@ grammar *initializeGrammar(void) {
   NT(NT_MOREEXPANSIONS);
   END_RULE();
 
-  /* -------- 25-c. <oneExpansion> → TK_DOT TK_FIELDID -------- */
   START_RULE(NT_ONEEXPANSION);
   T(TK_DOT);
   T(TK_FIELDID);
   END_RULE();
 
-  /* -------- 25-d. <moreExpansions> → <oneExpansion> <moreExpansions> | ε
-   * -------- */
   START_RULE(NT_MOREEXPANSIONS);
   NT(NT_ONEEXPANSION);
   NT(NT_MOREEXPANSIONS);
@@ -477,8 +396,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 26. <funCallStmt> → <outputParameters> TK_CALL TK_FUNID TK_WITH
-   * TK_PARAMETERS <inputParameters> TK_SEM -------- */
   START_RULE(NT_FUNCALLSTMT);
   NT(NT_OUTPUTPARAMETERS);
   T(TK_CALL);
@@ -489,8 +406,6 @@ grammar *initializeGrammar(void) {
   T(TK_SEM);
   END_RULE();
 
-  /* -------- 27. <outputParameters> → TK_SQL <idList> TK_SQR TK_ASSIGNOP | ε
-   * -------- */
   START_RULE(NT_OUTPUTPARAMETERS);
   T(TK_SQL);
   NT(NT_IDLIST);
@@ -501,19 +416,12 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 28. <inputParameters> → TK_SQL <idList> TK_SQR -------- */
   START_RULE(NT_INPUTPARAMETERS);
   T(TK_SQL);
   NT(NT_IDLIST);
   T(TK_SQR);
   END_RULE();
 
-  /* -------- 29. <iterativeStmt> → TK_WHILE TK_OP <booleanExpression> TK_CL
-   * <stmt> <otherStmts> TK_ENDWHILE -------- */
-  /*  NOTE: PDF says <stmts> here, but <stmts> includes a mandatory <returnStmt>
-   *  which is not valid inside a while body. Test cases confirm: no return
-   * inside while. We use <stmt><otherStmts> to allow only executable
-   * statements. */
   START_RULE(NT_ITERATIVESTMT);
   T(TK_WHILE);
   T(TK_OP);
@@ -524,10 +432,6 @@ grammar *initializeGrammar(void) {
   T(TK_ENDWHILE);
   END_RULE();
 
-  /* -------- 30-a. <conditionalStmt> → TK_IF TK_OP <booleanExpression> TK_CL
-   * TK_THEN <stmt> <otherStmts> <elsePart> -------- */
-  /*  NOTE: PDF says <stmts> here, but <stmts> includes a mandatory
-   * <returnStmt>. Test cases confirm: no return inside if-then. */
   START_RULE(NT_CONDITIONALSTMT);
   T(TK_IF);
   T(TK_OP);
@@ -539,9 +443,6 @@ grammar *initializeGrammar(void) {
   NT(NT_ELSEPART);
   END_RULE();
 
-  /* -------- 31-a. <elsePart> → TK_ELSE <stmt> <otherStmts> TK_ENDIF | TK_ENDIF
-   * -------- */
-  /*  NOTE: PDF says <stmts>, but same reasoning as above. */
   START_RULE(NT_ELSEPART);
   T(TK_ELSE);
   NT(NT_STMT);
@@ -552,8 +453,6 @@ grammar *initializeGrammar(void) {
   T(TK_ENDIF);
   END_RULE();
 
-  /* -------- 32. <ioStmt> → TK_READ ( <singleOrRecId> ) TK_SEM
-   *                       | TK_WRITE ( <var> ) TK_SEM -------- */
   START_RULE(NT_IOSTMT);
   T(TK_READ);
   T(TK_OP);
@@ -569,14 +468,11 @@ grammar *initializeGrammar(void) {
   T(TK_SEM);
   END_RULE();
 
-  /* -------- B1. <arithmeticExpression> → <term> <expPrime> -------- */
   START_RULE(NT_ARITHMETICEXPRESSION);
   NT(NT_TERM);
   NT(NT_EXPPRIME);
   END_RULE();
 
-  /* -------- B2. <expPrime> → <lowPrecedenceOp> <term> <expPrime> | ε --------
-   */
   START_RULE(NT_EXPPRIME);
   NT(NT_LOWPRECEDENCEOP);
   NT(NT_TERM);
@@ -586,14 +482,11 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- B3. <term> → <factor> <termPrime> -------- */
   START_RULE(NT_TERM);
   NT(NT_FACTOR);
   NT(NT_TERMPRIME);
   END_RULE();
 
-  /* -------- B4. <termPrime> → <highPrecedenceOp> <factor> <termPrime> | ε
-   * -------- */
   START_RULE(NT_TERMPRIME);
   NT(NT_HIGHPRECEDENCEOP);
   NT(NT_FACTOR);
@@ -603,8 +496,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- B5. <factor> → TK_OP <arithmeticExpression> TK_CL | <var> --------
-   */
   START_RULE(NT_FACTOR);
   T(TK_OP);
   NT(NT_ARITHMETICEXPRESSION);
@@ -614,7 +505,6 @@ grammar *initializeGrammar(void) {
   NT(NT_VAR);
   END_RULE();
 
-  /* -------- B6. <highPrecedenceOp> → TK_MUL | TK_DIV -------- */
   START_RULE(NT_HIGHPRECEDENCEOP);
   T(TK_MUL);
   END_RULE();
@@ -622,7 +512,6 @@ grammar *initializeGrammar(void) {
   T(TK_DIV);
   END_RULE();
 
-  /* -------- B7. <lowPrecedenceOp> → TK_PLUS | TK_MINUS -------- */
   START_RULE(NT_LOWPRECEDENCEOP);
   T(TK_PLUS);
   END_RULE();
@@ -630,8 +519,6 @@ grammar *initializeGrammar(void) {
   T(TK_MINUS);
   END_RULE();
 
-  /* -------- 36. <booleanExpression> → TK_OP <booleanExpression> TK_CL
-   * <logicalOp> TK_OP <booleanExpression> TK_CL -------- */
   START_RULE(NT_BOOLEANEXPRESSION);
   T(TK_OP);
   NT(NT_BOOLEANEXPRESSION);
@@ -642,15 +529,12 @@ grammar *initializeGrammar(void) {
   T(TK_CL);
   END_RULE();
 
-  /* -------- 37. <booleanExpression> → <var> <relationalOp> <var> -------- */
   START_RULE(NT_BOOLEANEXPRESSION);
   NT(NT_VAR);
   NT(NT_RELATIONALOP);
   NT(NT_VAR);
   END_RULE();
 
-  /* -------- 38-a. <booleanExpression> → TK_NOT TK_OP <booleanExpression> TK_CL
-   * -------- */
   START_RULE(NT_BOOLEANEXPRESSION);
   T(TK_NOT);
   T(TK_OP);
@@ -658,7 +542,6 @@ grammar *initializeGrammar(void) {
   T(TK_CL);
   END_RULE();
 
-  /* -------- 39-a. <var> → <singleOrRecId> | TK_NUM | TK_RNUM -------- */
   START_RULE(NT_VAR);
   NT(NT_SINGLEORRECID);
   END_RULE();
@@ -669,7 +552,6 @@ grammar *initializeGrammar(void) {
   T(TK_RNUM);
   END_RULE();
 
-  /* -------- 40. <logicalOp> → TK_AND | TK_OR -------- */
   START_RULE(NT_LOGICALOP);
   T(TK_AND);
   END_RULE();
@@ -677,7 +559,6 @@ grammar *initializeGrammar(void) {
   T(TK_OR);
   END_RULE();
 
-  /* -------- 41. <relationalOp> -------- */
   START_RULE(NT_RELATIONALOP);
   T(TK_LT);
   END_RULE();
@@ -697,14 +578,12 @@ grammar *initializeGrammar(void) {
   T(TK_NE);
   END_RULE();
 
-  /* -------- 42. <returnStmt> → TK_RETURN <optionalReturn> TK_SEM -------- */
   START_RULE(NT_RETURNSTMT);
   T(TK_RETURN);
   NT(NT_OPTIONALRETURN);
   T(TK_SEM);
   END_RULE();
 
-  /* -------- 43. <optionalReturn> → TK_SQL <idList> TK_SQR | ε -------- */
   START_RULE(NT_OPTIONALRETURN);
   T(TK_SQL);
   NT(NT_IDLIST);
@@ -714,13 +593,11 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 44. <idList> → TK_ID <more_ids> -------- */
   START_RULE(NT_IDLIST);
   T(TK_ID);
   NT(NT_MORE_IDS);
   END_RULE();
 
-  /* -------- 45. <more_ids> → TK_COMMA <idList> | ε -------- */
   START_RULE(NT_MORE_IDS);
   T(TK_COMMA);
   NT(NT_IDLIST);
@@ -729,8 +606,6 @@ grammar *initializeGrammar(void) {
   EPS();
   END_RULE();
 
-  /* -------- 46. <definetypestmt> → TK_DEFINETYPE <A> TK_RUID TK_AS TK_RUID
-   * -------- */
   START_RULE(NT_DEFINETYPESTMT);
   T(TK_DEFINETYPE);
   NT(NT_A);
@@ -739,7 +614,6 @@ grammar *initializeGrammar(void) {
   T(TK_RUID);
   END_RULE();
 
-  /* -------- 47. <A> → TK_RECORD | TK_UNION -------- */
   START_RULE(NT_A);
   T(TK_RECORD);
   END_RULE();
@@ -750,9 +624,6 @@ grammar *initializeGrammar(void) {
   return G;
 }
 
-/* -----------------------------------------------
- * FIRST / FOLLOW computation
- * ----------------------------------------------- */
 static void addToFirst(FirstSet *s, TokenType t) {
   for (int i = 0; i < s->firstCount; i++)
     if (s->first[i] == t)
@@ -783,7 +654,6 @@ static FollowSet *getFollowSet(NonTerminal nt, FirstAndFollow *F) {
   return NULL;
 }
 
-/* One pass of FIRST computation for non-terminal nt */
 static void computeFirstOne(NonTerminal nt, grammar *G, FirstAndFollow *F) {
   FirstSet *fs = getFirstSet(nt, F);
   if (!fs)
@@ -794,7 +664,6 @@ static void computeFirstOne(NonTerminal nt, grammar *G, FirstAndFollow *F) {
     if (rule->lhs != nt)
       continue;
 
-    /* Epsilon rule */
     if (rule->rhsCount == 1 && rule->rhs[0].type == SYMBOL_TERMINAL &&
         rule->rhs[0].symbol.terminal == TK_EPSILON) {
       fs->hasEpsilon = 1;
@@ -828,7 +697,6 @@ static void computeFirstOne(NonTerminal nt, grammar *G, FirstAndFollow *F) {
   }
 }
 
-/* One pass of FOLLOW computation for non-terminal nt */
 static void computeFollowOne(NonTerminal nt, grammar *G, FirstAndFollow *F) {
   if (nt == G->startSymbol) {
     FollowSet *fw = getFollowSet(nt, F);
@@ -885,7 +753,6 @@ FirstAndFollow computeFirstAndFollowSets(grammar *G) {
   F.firstCount = 0;
   F.followCount = 0;
 
-  /* Initialize sets for every non-terminal */
   for (int i = 0; i < (int)NT_COUNT; i++) {
     F.firstSets[F.firstCount].nonTerminal = (NonTerminal)i;
     F.firstSets[F.firstCount].firstCount = 0;
@@ -896,7 +763,6 @@ FirstAndFollow computeFirstAndFollowSets(grammar *G) {
     F.followCount++;
   }
 
-  /* Iterate FIRST until stable */
   for (int iter = 0; iter < 50; iter++) {
     int oldTotal = 0, newTotal = 0;
     for (int i = 0; i < F.firstCount; i++)
@@ -909,7 +775,6 @@ FirstAndFollow computeFirstAndFollowSets(grammar *G) {
       break;
   }
 
-  /* Iterate FOLLOW until stable */
   for (int iter = 0; iter < 50; iter++) {
     int oldTotal = 0, newTotal = 0;
     for (int i = 0; i < F.followCount; i++)
@@ -925,11 +790,7 @@ FirstAndFollow computeFirstAndFollowSets(grammar *G) {
   return F;
 }
 
-/* -----------------------------------------------
- * Parse table construction
- * ----------------------------------------------- */
 void createParseTable(FirstAndFollow *F, table *T, grammar *G) {
-  /* Zero out table */
   for (int i = 0; i < MAX_NT; i++)
     for (int j = 0; j < TABLE_TERMINALS; j++) {
       T->entries[i][j].isValid = 0;
@@ -941,7 +802,6 @@ void createParseTable(FirstAndFollow *F, table *T, grammar *G) {
     GrammarRule *rule = &G->rules[ri];
     NonTerminal A = rule->lhs;
 
-    /* Compute FIRST(α) for this rule's RHS */
     FirstSet alpha;
     alpha.firstCount = 0;
     alpha.hasEpsilon = 0;
@@ -974,7 +834,6 @@ void createParseTable(FirstAndFollow *F, table *T, grammar *G) {
     if (allEps)
       alpha.hasEpsilon = 1;
 
-    /* For each terminal in FIRST(α) populate table */
     for (int j = 0; j < alpha.firstCount; j++) {
       int a = (int)alpha.first[j];
       if (a >= 0 && a < TABLE_TERMINALS) {
@@ -986,7 +845,6 @@ void createParseTable(FirstAndFollow *F, table *T, grammar *G) {
       }
     }
 
-    /* If eps ∈ FIRST(α), add rule for each token in FOLLOW(A) */
     if (alpha.hasEpsilon) {
       FollowSet *fw = getFollowSet(A, F);
       if (fw) {
@@ -1005,9 +863,6 @@ void createParseTable(FirstAndFollow *F, table *T, grammar *G) {
   }
 }
 
-/* -----------------------------------------------
- * Stack operations (static helpers)
- * ----------------------------------------------- */
 static void push(stackNode **top, GrammarSymbol sym, parseTreeNode *tn) {
   stackNode *n = (stackNode *)malloc(sizeof(stackNode));
   if (!n) {
@@ -1028,9 +883,6 @@ static stackNode *pop(stackNode **top) {
   return n;
 }
 
-/* -----------------------------------------------
- * Parse tree node operations
- * ----------------------------------------------- */
 static parseTreeNode *createNode(GrammarSymbol sym) {
   parseTreeNode *n = (parseTreeNode *)calloc(1, sizeof(parseTreeNode));
   if (!n) {
@@ -1049,20 +901,12 @@ static void addChild(parseTreeNode *parent, parseTreeNode *child) {
   }
 }
 
-/* -----------------------------------------------
- * Synchronization set for panic mode recovery
- * Includes semicolons and block-closing keywords
- * per Announcement 7 guidance.
- * ----------------------------------------------- */
 static int isSyncToken(TokenType t) {
   return (t == TK_SEM || t == TK_ENDRECORD || t == TK_ENDUNION ||
           t == TK_ENDIF || t == TK_ENDWHILE || t == TK_ELSE || t == TK_CL ||
           t == TK_SQR || t == TK_END || t == TK_EOF);
 }
 
-/* -----------------------------------------------
- * Helper: advance past all lexical errors in stream
- * ----------------------------------------------- */
 static tokenInfo nextMeaningfulToken(twinBuffer *tb, int *errorCount,
                                      int *syntaxOK) {
   tokenInfo cur;
@@ -1080,9 +924,6 @@ static tokenInfo nextMeaningfulToken(twinBuffer *tb, int *errorCount,
   return cur;
 }
 
-/* -----------------------------------------------
- * Main parsing function
- * ----------------------------------------------- */
 parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
   FILE *fp = fopen(testcaseFile, "r");
   if (!fp) {
@@ -1102,7 +943,6 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
   start.symbol.nonTerminal = G->startSymbol;
   PT->root = createNode(start);
 
-  /* Push $ (EOF marker) then start symbol */
   stackNode *stack = NULL;
   GrammarSymbol dollar;
   dollar.type = SYMBOL_TERMINAL;
@@ -1110,12 +950,10 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
   push(&stack, dollar, NULL);
   push(&stack, start, PT->root);
 
-  /* Fetch first non-error, non-comment token */
   int errorCount = 0;
   int syntaxOK = 1;
   tokenInfo cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
 
-  /* Track last line that had an error to avoid duplicate reporting */
   int lastErrorLine = -1;
 
   while (stack != NULL && errorCount < 60) {
@@ -1124,11 +962,9 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
     parseTreeNode *tn = topNode->treeNode;
     free(topNode);
 
-    /* Skip epsilon terminals — they are tree markers, not real tokens */
     if (X.type == SYMBOL_TERMINAL && X.symbol.terminal == TK_EPSILON)
       continue;
 
-    /* Hit the end-of-input marker on the stack */
     if (X.type == SYMBOL_TERMINAL && X.symbol.terminal == TK_EOF) {
       if (cur.tokenType != TK_EOF) {
         if (cur.lineNumber != lastErrorLine) {
@@ -1144,7 +980,6 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
     }
 
     if (X.type == SYMBOL_TERMINAL) {
-      /* ---- Terminal match ---- */
       if (X.symbol.terminal == cur.tokenType) {
         if (tn) {
           tn->token = cur;
@@ -1152,9 +987,7 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
         }
         cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
       } else {
-        /* Terminal mismatch: report and skip expected terminal
-         * (do NOT advance input, so current token can match next expected item)
-         */
+     
         if (cur.lineNumber != lastErrorLine) {
           fprintf(stderr,
                   "Line %d\tError: The token %s for lexeme %s  does not match "
@@ -1165,10 +998,8 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
           errorCount++;
           syntaxOK = 0;
         }
-        /* Pop the expected terminal (skip it); keep current input unchanged */
       }
     } else {
-      /* ---- Non-terminal: consult parse table ---- */
       NonTerminal A = X.symbol.nonTerminal;
       int a = (int)cur.tokenType;
 
@@ -1177,52 +1008,37 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
         parseTreeNode *children[MAX_RHS];
         int nc = 0;
 
-        /* Create child nodes for each symbol in the rule RHS */
         for (int i = 0; i < rule->rhsCount; i++) {
           children[nc] = createNode(rule->rhs[i]);
           nc++;
         }
-        /* Attach children to current tree node */
         for (int i = 0; i < nc; i++)
           addChild(tn, children[i]);
 
-        /* Push RHS symbols in reverse order so leftmost is processed first */
         for (int i = nc - 1; i >= 0; i--)
           push(&stack, rule->rhs[i], children[i]);
 
       } else {
-        /* ---- No table entry: report error & panic-mode recover ---- */
         if (cur.tokenType != TK_EOF && cur.lineNumber != lastErrorLine) {
           fprintf(stderr,
                   "Line %d\tError: Invalid token %s encountered with value %s "
                   "stack top %s\n",
                   cur.lineNumber, getTokenName(a), cur.lexeme,
-                  getNonTerminalName(A) + 1); /* +1 skips leading '<' */
+                  getNonTerminalName(A) + 1); 
           lastErrorLine = cur.lineNumber;
           errorCount++;
           syntaxOK = 0;
         }
 
-        /* Panic mode:
-         *   Strategy 1 — if current token is a sync token, discard A (pop it)
-         *                and let the sync token be matched by the stack later.
-         *   Strategy 2 — skip input tokens until a sync token is found,
-         *                then discard A.
-         * We always discard A (already popped). We advance input only if
-         * not already on a sync token.
-         */
         if (!isSyncToken(cur.tokenType)) {
-          /* Skip input until sync token or EOF */
           while (cur.tokenType != TK_EOF && !isSyncToken(cur.tokenType)) {
             cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
           }
         }
-        /* A is already discarded (was popped above); continue parsing */
       }
     }
-  } /* end main parse loop */
+  }
 
-  /* Drain remaining stack nodes (memory clean-up) */
   while (stack) {
     stackNode *n = pop(&stack);
     free(n);
@@ -1237,26 +1053,14 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
   return PT;
 }
 
-/* -----------------------------------------------
- * Parse tree printing
- *
- * Inorder traversal for n-ary tree (per spec):
- *   visit leftmost child → print parent node → visit remaining children
- *
- * Output columns per line (per instructor spec):
- *   lexeme  CurrentNode  lineno  tokenName  valueIfNumber
- *   parentNodeSymbol  isLeafNode(yes/no)  NodeSymbol
- * ----------------------------------------------- */
 static void printInorder(parseTreeNode *node, FILE *fp) {
   if (!node)
     return;
 
-  /* Determine parent symbol string */
   char parentStr[64];
   if (node->parent == NULL) {
     strcpy(parentStr, "ROOT");
   } else if (node->parent->symbol.type == SYMBOL_NON_TERMINAL) {
-    /* Strip angle brackets for cleaner output */
     const char *full =
         getNonTerminalName(node->parent->symbol.symbol.nonTerminal);
     int len = (int)strlen(full);
@@ -1273,7 +1077,6 @@ static void printInorder(parseTreeNode *node, FILE *fp) {
   }
 
   if (node->isLeaf || node->childCount == 0) {
-    /* Leaf / terminal node */
     char valueStr[32];
     if (node->token.tokenType == TK_NUM && node->token.hasValue)
       snprintf(valueStr, sizeof(valueStr), "%d", node->token.value.intValue);
@@ -1282,21 +1085,16 @@ static void printInorder(parseTreeNode *node, FILE *fp) {
     else
       strcpy(valueStr, "----");
 
-    /* For epsilon nodes the lexeme array will be empty */
     const char *lex =
         (node->token.lexeme[0] != '\0') ? node->token.lexeme : "----";
 
-    /* CurrentNode for a leaf is the token name */
     const char *currentNode = getTokenName(node->token.tokenType);
 
-    /* Format per spec: lexeme CurrentNode lineno tokenName valueIfNumber
-     *                  parentNodeSymbol isLeafNode NodeSymbol */
     fprintf(fp, "%-20s  %-30s  %-6d  %-22s  %-12s  %-30s  %-5s  %-s\n", lex,
             currentNode, node->token.lineNumber,
             getTokenName(node->token.tokenType), valueStr, parentStr, "yes",
             "----");
   } else {
-    /* Internal (non-terminal) node */
     const char *fullNT = getNonTerminalName(node->symbol.symbol.nonTerminal);
     char ntStr[64];
     int len = (int)strlen(fullNT);
@@ -1308,18 +1106,13 @@ static void printInorder(parseTreeNode *node, FILE *fp) {
       ntStr[63] = '\0';
     }
 
-    /* Inorder: first child */
     if (node->childCount > 0) {
       printInorder(node->children[0], fp);
     }
 
-    /* Print this internal node
-     * Format: lexeme CurrentNode lineno tokenName valueIfNumber
-     *         parentNodeSymbol isLeafNode NodeSymbol */
     fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-5s  %-s\n", "----",
             ntStr, "----", "----", "----", parentStr, "no", ntStr);
 
-    /* Remaining children */
     for (int i = 1; i < node->childCount; i++) {
       printInorder(node->children[i], fp);
     }
@@ -1338,7 +1131,6 @@ void printParseTree(parseTree *PT, char *outfile) {
     return;
   }
 
-  /* Column header per instructor spec */
   fprintf(fp, "%-20s  %-30s  %-6s  %-22s  %-12s  %-30s  %-5s  %-s\n", "lexeme",
           "CurrentNode", "lineno", "tokenName", "valueIfNumber",
           "parentNodeSymbol", "isLeaf", "NodeSymbol");
@@ -1352,9 +1144,6 @@ void printParseTree(parseTree *PT, char *outfile) {
   printf("Parse tree written to %s\n", outfile);
 }
 
-/* -----------------------------------------------
- * Free parse tree (post-order traversal)
- * ----------------------------------------------- */
 static void freeNode(parseTreeNode *node) {
   if (!node)
     return;
@@ -1370,9 +1159,6 @@ void freeParseTree(parseTree *PT) {
   free(PT);
 }
 
-/* -----------------------------------------------
- * printFirstAndFollow (debugging aid)
- * ----------------------------------------------- */
 void printFirstAndFollow(FirstAndFollow *F) {
   printf("\n========== FIRST SETS ==========\n");
   for (int i = 0; i < F->firstCount; i++) {
@@ -1394,9 +1180,6 @@ void printFirstAndFollow(FirstAndFollow *F) {
   }
 }
 
-/* -----------------------------------------------
- * printParseTable (debugging aid)
- * ----------------------------------------------- */
 void printParseTable(table *T, grammar *G) {
   printf("\n========== PARSE TABLE (non-empty entries) ==========\n");
   for (int i = 0; i < (int)NT_COUNT; i++) {
@@ -1408,5 +1191,5 @@ void printParseTable(table *T, grammar *G) {
       }
     }
   }
-  (void)G; /* suppress unused-parameter warning */
+  (void)G; 
 }
