@@ -195,12 +195,9 @@ tokenInfo getNextToken(twinBuffer *tb) {
                   return token;
                 }
               } else {
-                if (hasSign)
-                  retract(tb, 2);
-                else
-                  retract(tb, 1);
+                retract(tb, 1);
                 getLexeme(tb, token.lexeme);
-                token.tokenType = TK_RNUM;
+                token.tokenType = TK_ERROR;
                 token.value.realValue = atof(token.lexeme);
                 token.hasValue = 1;
                 token.lineNumber = startLine;
