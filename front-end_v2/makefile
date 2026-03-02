@@ -1,7 +1,10 @@
-# Makefile for Compiler Front-End
-# CS F363 Compiler Design Project
-# Compatible with GCC / Clang (macOS / Linux)
-
+#Group 10
+#2022B5A70783P Shiv Tiwari
+#2022B5A70724P Samyek Jain
+#2022B3A70551P Ayush Jain
+#2022B4A71282P Nachiket Garg
+#2022B5A71326P Mayukh Khetan
+#2022B5A70763P Shubham Mishra
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -g
