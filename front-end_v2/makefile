@@ -57,10 +57,10 @@ test: $(TARGET)
 test-lexer: $(TARGET)
 	@echo ""
 	@echo "========== Lexer Test: t1.txt =========="
-	@echo "2" | ./$(TARGET) lexer_test_cases/t1.txt
+	@echo "2" | ./$(TARGET) t1.txt random.txt
 	@echo ""
 	@echo "========== Lexer Test: t2.txt =========="
-	@echo "2" | ./$(TARGET) lexer_test_cases/t2.txt
+	@echo "2" | ./$(TARGET) t2.txt random.txt
 
 # Run parser tests
 test-parser: $(TARGET)
