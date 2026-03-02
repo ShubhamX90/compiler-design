@@ -1,3 +1,12 @@
+/* Group 10
+2022B5A70783P Shiv Tiwari
+2022B5A70724P Samyek Jain
+2022B3A70551P Ayush Jain
+2022B4A71282P Nachiket Garg
+2022B5A71326P Mayukh Khetan
+2022B5A70763P Shubham Mishra
+*/
+
 #include "parser.h"
 #include "lexer.h"
 #include "parserDef.h"
@@ -1133,6 +1142,12 @@ parseTree *parseInputSourceCode(char *testcaseFile, table *T, grammar *G) {
   while (stack) {
     stackNode *n = pop(&stack);
     free(n);
+  }
+
+  /* Drain remaining tokens from the lexer so that any lexical errors
+     in the un-parsed portion of the input file are still reported. */
+  while (cur.tokenType != TK_EOF) {
+    cur = nextMeaningfulToken(tb, &errorCount, &syntaxOK);
   }
 
   freeTwinBuffer(tb);

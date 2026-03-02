@@ -1,3 +1,12 @@
+/* Group 10
+2022B5A70783P Shiv Tiwari
+2022B5A70724P Samyek Jain
+2022B3A70551P Ayush Jain
+2022B4A71282P Nachiket Garg
+2022B5A71326P Mayukh Khetan
+2022B5A70763P Shubham Mishra
+*/
+
 #ifndef PARSERDEF_H
 #define PARSERDEF_H
 #include "lexerDef.h"

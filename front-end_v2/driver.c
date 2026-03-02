@@ -1,3 +1,12 @@
+/* Group 10
+2022B5A70783P Shiv Tiwari
+2022B5A70724P Samyek Jain
+2022B3A70551P Ayush Jain
+2022B4A71282P Nachiket Garg
+2022B5A71326P Mayukh Khetan
+2022B5A70763P Shubham Mishra
+*/
+
 #include "lexer.h"
 #include "parser.h"
 #include <stdio.h>
@@ -11,12 +20,10 @@ void optionPrintTokens(char *sourceFile);
 void optionParsing(char *sourceFile, char *parseTreeFile);
 void optionTiming(char *sourceFile);
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   printImplementationStatus();
 
-  if (argc < 3)
-  {
+  if (argc < 3) {
     fprintf(stderr, "Usage: %s <source_file.txt> <parsetree_output.txt>\n",
             argv[0]);
     fprintf(stderr, "Example: ./stage1exe testcase.txt parsetreeOutFile.txt\n");
@@ -27,8 +34,7 @@ int main(int argc, char *argv[])
   char *parseTreeFile = argv[2];
 
   FILE *check = fopen(sourceFile, "r");
-  if (!check)
-  {
+  if (!check) {
     fprintf(stderr, "Error: Cannot open source file %s\n", sourceFile);
     return 1;
   }
@@ -37,20 +43,17 @@ int main(int argc, char *argv[])
   int option;
   printf("COMPILER FRONT-END\n");
 
-  do
-  {
+  do {
     printMenu();
     printf("Enter option: ");
 
     int scanResult = scanf("%d", &option);
 
-    if (scanResult == EOF)
-    {
+    if (scanResult == EOF) {
       break;
     }
 
-    if (scanResult != 1)
-    {
+    if (scanResult != 1) {
       int c;
       while ((c = getchar()) != '\n' && c != EOF)
         ;
@@ -64,8 +67,7 @@ int main(int argc, char *argv[])
 
     printf("\n");
 
-    switch (option)
-    {
+    switch (option) {
     case 0:
       printf("Exiting compiler...\n");
       break;
@@ -95,10 +97,8 @@ int main(int argc, char *argv[])
       break;
     }
 
-    if (option != 0)
-    {
-      if (feof(stdin))
-      {
+    if (option != 0) {
+      if (feof(stdin)) {
         break;
       }
 
@@ -114,8 +114,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void printImplementationStatus(void)
-{
+void printImplementationStatus(void) {
   printf("\n IMPLEMENTATION STATUS \n");
   printf("(a) FIRST and FOLLOW set automated:              YES\n");
   printf("(b) Only Lexical analyzer module developed:      NO\n");
@@ -125,8 +124,7 @@ void printImplementationStatus(void)
   printf("(f) Parse tree constructed:                      YES\n");
 }
 
-void printMenu(void)
-{
+void printMenu(void) {
   printf("\n MENU \n");
   printf("0 : Exit\n");
   printf("1 : Remove comments and print clean code on console\n");
@@ -135,14 +133,12 @@ void printMenu(void)
   printf("4 : Print total time taken by lexer and parser\n");
 }
 
-void optionCommentRemoval(char *sourceFile)
-{
+void optionCommentRemoval(char *sourceFile) {
   char cleanFile[] = "clean_code.txt";
   removeComments(sourceFile, cleanFile);
 
   FILE *fp = fopen(cleanFile, "r");
-  if (fp)
-  {
+  if (fp) {
     printf("\n CLEAN CODE (comments removed) \n");
     int ch;
     while ((ch = fgetc(fp)) != EOF)
@@ -151,45 +147,40 @@ void optionCommentRemoval(char *sourceFile)
   }
 }
 
-void optionPrintTokens(char *sourceFile)
-{
+void optionPrintTokens(char *sourceFile) {
   FILE *fp = fopen(sourceFile, "r");
-  if (!fp)
-  {
+  if (!fp) {
     fprintf(stderr, "Error: Cannot open file %s\n", sourceFile);
     return;
   }
 
   twinBuffer *tb = initializeTwinBuffer(fp);
 
-  printf("\n%-10s  %-30s  %-22s  %-8s  %-15s\n", "Line No.", "Lexeme", "Token", "HasVal", "Value");
+  printf("\n%-10s  %-30s  %-22s  %-8s  %-15s\n", "Line No.", "Lexeme", "Token",
+         "HasVal", "Value");
 
   tokenInfo token;
   int tokenCount = 0;
   int errorCount = 0;
 
-  do
-  {
+  do {
     token = getNextToken(tb);
 
-    if (token.tokenType == TK_ERROR)
-    {
-      fprintf(stderr, "Line %d\tError: %s\n", token.lineNumber, token.errorMsg[0] ? token.errorMsg : token.lexeme);
+    if (token.tokenType == TK_ERROR) {
+      fprintf(stderr, "Line %d\tError: %s\n", token.lineNumber,
+              token.errorMsg[0] ? token.errorMsg : token.lexeme);
       errorCount++;
 
-      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber, token.lexeme, "TK_ERROR", "---", token.errorMsg[0] ? token.errorMsg : "lexical error");
+      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber,
+             token.lexeme, "TK_ERROR", "---",
+             token.errorMsg[0] ? token.errorMsg : "lexical error");
       tokenCount++;
-    }
-    else if (token.tokenType == TK_EOF)
-    {
+    } else if (token.tokenType == TK_EOF) {
       break;
-    }
-    else
-    {
+    } else {
       char valueStr[32] = "----";
       char hasValStr[8] = "no";
-      if (token.hasValue)
-      {
+      if (token.hasValue) {
         strcpy(hasValStr, "yes");
         if (token.tokenType == TK_NUM)
           snprintf(valueStr, sizeof(valueStr), "%d", token.value.intValue);
@@ -197,7 +188,8 @@ void optionPrintTokens(char *sourceFile)
           snprintf(valueStr, sizeof(valueStr), "%.4f", token.value.realValue);
       }
 
-      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber, token.lexeme, getTokenName(token.tokenType), hasValStr, valueStr);
+      printf("%-10d  %-30s  %-22s  %-8s  %-15s\n", token.lineNumber,
+             token.lexeme, getTokenName(token.tokenType), hasValStr, valueStr);
       tokenCount++;
     }
 
@@ -210,8 +202,7 @@ void optionPrintTokens(char *sourceFile)
   freeTwinBuffer(tb);
 }
 
-void optionParsing(char *sourceFile, char *parseTreeFile)
-{
+void optionParsing(char *sourceFile, char *parseTreeFile) {
   printf("Initializing grammar...\n");
   grammar *G = initializeGrammar();
   printf("Grammar initialized with %d rules.\n", G->ruleCount);
@@ -228,21 +219,17 @@ void optionParsing(char *sourceFile, char *parseTreeFile)
   printf("Parsing: %s\n", sourceFile);
   parseTree *PT = parseInputSourceCode(sourceFile, &T, G);
 
-  if (PT && PT->root)
-  {
+  if (PT && PT->root) {
     printParseTree(PT, parseTreeFile);
     freeParseTree(PT);
-  }
-  else
-  {
+  } else {
     fprintf(stderr, "Parsing failed – no parse tree generated.\n");
   }
 
   free(G);
 }
 
-void optionTiming(char *sourceFile)
-{
+void optionTiming(char *sourceFile) {
   clock_t start_time, end_time;
   double total_CPU_time, total_CPU_time_in_seconds;
 

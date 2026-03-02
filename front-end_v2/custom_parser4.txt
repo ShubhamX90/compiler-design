@@ -1,0 +1,431 @@
+%===========================================================================
+% new_errors_tc.txt  –  Comprehensive ERROR test case (new)
+% Language: ERPLAG / CS F363 custom language, BITS Pilani 2026
+%
+% Every function (except the two marked CORRECT) contains EXACTLY ONE
+% deliberate error.  Each error type is DIFFERENT from those in custom6.
+% A short comment on each function names the grammar rule violated and
+% the exact token that causes the failure.
+%
+% ERROR INVENTORY  (19 distinct error types):
+%  F2   Lexical    – missing 'input' keyword (TK_PARAMETER seen instead of TK_INPUT)
+%  F3   Lexical    – identifier starts with 'a' (not in {b,c,d})
+%  F4   Syntax     – endunion used where endrecord expected
+%  F5   Syntax     – definetype missing the 'as' keyword
+%  F6   Syntax     – missing 'parameter' keyword in input parameter list
+%  F7   Syntax     – number (TK_NUM) on LHS of assignment
+%  F8   Lexical    – RNUM exponent without sign: '1.23E5' (no '+' or '-')
+%  F9   Syntax     – missing 'call' keyword in function call statement
+%  F10  Lexical    – '-->' instead of '<---' (wrong arrow direction)
+%  F11  Syntax     – return statement missing closing ']' bracket
+%  F12  Syntax     – record definition with only ONE field (grammar requires ≥ 2)
+%  F13  Syntax     – field definition missing colon  (type int fieldname;)
+%  F14  Syntax     – declaration missing datatype  (type : b5;)
+%  F15  Syntax     – if condition without outer parentheses
+%  F16  Lexical    – '@' single at-sign (TK_ERROR, different from '@@' in custom6)
+%  F17  Syntax     – 'output parameter list' written without '[' (TK_SQL missing)
+%  F18  Syntax     – while loop body is entirely empty (requires ≥ 1 stmt)
+%  F19  Syntax     – 'definetype' first argument is a TK_RUID not TK_RECORD/TK_UNION
+%  F20  Syntax     – return [b3] missing semicolon
+%===========================================================================
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 1: CORRECT – baseline; parser must handle this cleanly
+% -----------------------------------------------------------------------
+_correct1 input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2 * 2;
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 2: ERROR – missing 'input' keyword before 'parameter list'
+% Grammar rule 5: input_par ::= TK_INPUT TK_PARAMETER TK_LIST ...
+% Parser sees TK_PARAMETER immediately after TK_FUNID; expects TK_INPUT.
+% -----------------------------------------------------------------------
+_missingInput parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2;
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 3: ERROR – identifier 'a5' starts with 'a' (not in {b,c,d})
+% Lexer cannot form TK_ID; 'a5' will be TK_ERROR or two unknown tokens.
+% -----------------------------------------------------------------------
+_badIdStart input parameter list[int b2]
+output parameter list[int b3];
+	type int : a5;
+	a5 <--- b2;
+	b3 <--- a5;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 4: ERROR – 'endunion' used as closing keyword for a record block
+% Grammar rules 14/15: record block ends with TK_ENDRECORD, not TK_ENDUNION.
+% -----------------------------------------------------------------------
+_wrongEndKeyword input parameter list[int b2]
+output parameter list[int b3];
+	record #mytype
+		type int: fieldone;
+		type real: fieldtwo;
+	endunion
+	type record #mytype : d7;
+	d7.fieldone <--- b2;
+	b3 <--- d7.fieldone;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 5: ERROR – 'definetype' statement missing the 'as' keyword
+% Grammar rule 46: definetypestmt ::= TK_DEFINETYPE <A> TK_RUID TK_AS TK_RUID
+% '#xyz' is encountered where TK_AS is expected.
+% -----------------------------------------------------------------------
+_badDefinetype input parameter list[int b2]
+output parameter list[int b3];
+	record #abc
+		type int: xfield;
+		type int: yfield;
+	endrecord
+	definetype record #abc #xyz
+	type record #abc : d7;
+	d7.xfield <--- b2;
+	b3 <--- d7.xfield;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 6: ERROR – 'input list[...]' instead of 'input parameter list[...]'
+% Grammar rule 5: expects TK_INPUT TK_PARAMETER TK_LIST ...
+% TK_LIST is seen where TK_PARAMETER is expected.
+% -----------------------------------------------------------------------
+_missingParamKw input list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2;
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 7: ERROR – numeric literal '42' on the LHS of an assignment
+% Grammar rule 24: assignmentStmt ::= <singleOrRecId> TK_ASSIGNOP ...
+%                  rule 25e: singleOrRecId ::= TK_ID ...
+% TK_NUM (42) is not TK_ID; the assignment is syntactically invalid.
+% -----------------------------------------------------------------------
+_numOnLhs input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2;
+	42 <--- d7;
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 8: ERROR – RNUM with missing sign in exponent: '1.23E5'
+% Lexer expects TK_RNUM pattern: digits.digits [E (+|-) digits]
+% '1.23E5' is not a valid RNUM; '5' will be tokenised as a separate TK_NUM.
+% Also '9.9' has only one decimal digit: another RNUM lexer error.
+% -----------------------------------------------------------------------
+_badRnumExp input parameter list[int b2]
+output parameter list[real d3];
+	type real : c4;
+	type real : c5;
+	c4 <--- 1.23E5;
+	c5 <--- 9.9;
+	d3 <--- c4 + c5;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 9: ERROR – 'call' keyword missing in function call statement
+% Grammar rule 26: funCallStmt ::= <outputParameters> TK_CALL TK_FUNID ...
+% Parser sees TK_FUNID directly after '<---'; expects TK_CALL first.
+% -----------------------------------------------------------------------
+_missingCallKw input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2;
+	[b3] <--- _correct1 with parameters [d7];
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 10: ERROR – assignment operator written as '-->' (wrong direction)
+% The valid assignment operator is '<---'.
+% '--' tokenises as two TK_MINUS tokens; '>' as TK_GT.
+% After 'd7' (TK_ID) the parser expects TK_ASSIGNOP but gets TK_MINUS.
+% -----------------------------------------------------------------------
+_wrongArrow input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 --> b2;
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 11: ERROR – return statement missing closing ']' bracket
+% Grammar rule 43: optionalReturn ::= TK_SQL <idList> TK_SQR | eps
+%                  rule 42: returnStmt ::= TK_RETURN <optionalReturn> TK_SEM
+% 'return [b3;' ends with TK_SEM where TK_SQR is expected.
+% -----------------------------------------------------------------------
+_missingCloseBracket input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2 + 1;
+	b3 <--- d7;
+	return [b3;
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 12: ERROR – record with only ONE field definition
+% Grammar rule 16: fieldDefinitions ::= <fieldDefinition><fieldDefinition><moreFields>
+% A minimum of TWO field definitions is required.
+% After the sole field, parser expects TK_TYPE (for 2nd fieldDefinition)
+% but finds TK_ENDRECORD.
+% -----------------------------------------------------------------------
+_oneFieldRecord input parameter list[int b2]
+output parameter list[int b3];
+	record #onefield
+		type int: single;
+	endrecord
+	type record #onefield : d7;
+	d7.single <--- b2;
+	b3 <--- d7.single;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 13: ERROR – field definition missing colon
+% Grammar rule 17: fieldDefinition ::= TK_TYPE <fieldType> TK_COLON TK_FIELDID TK_SEM
+% 'type int fieldone;' – parser finds TK_FIELDID where TK_COLON is expected.
+% -----------------------------------------------------------------------
+_fieldNoColon input parameter list[int b2]
+output parameter list[int b3];
+	record #badfield
+		type int fieldone;
+		type real: fieldtwo;
+	endrecord
+	type record #badfield : d7;
+	b3 <--- b2;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 14: ERROR – declaration missing the datatype token
+% Grammar rule 20: declaration ::= TK_TYPE <dataType> TK_COLON TK_ID ...
+% 'type : b5;' – TK_COLON is seen where <dataType> (TK_INT/TK_REAL/...) expected.
+% -----------------------------------------------------------------------
+_missingDatatype input parameter list[int b2]
+output parameter list[int b3];
+	type : b5;
+	b5 <--- b2;
+	b3 <--- b5;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 15: ERROR – 'if' condition without parentheses
+% Grammar rule 30-a: conditionalStmt ::= TK_IF TK_OP <boolExpr> TK_CL TK_THEN ...
+% 'if b2 > b3 then' – TK_ID seen where TK_OP '(' is expected after TK_IF.
+% -----------------------------------------------------------------------
+_ifNoParen input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : d7;
+	d7 <--- 0;
+	if b2 > b3
+	then
+		d7 <--- 1;
+	else
+		d7 <--- 2;
+	endif
+	b4 <--- d7;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 16: ERROR – single '@' character (TK_ERROR)
+% The language uses '@@@' (TK_OR). A single '@' is an unknown symbol.
+% Different from custom6 which tests '@@' (two at-signs).
+% -----------------------------------------------------------------------
+_singleAt input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : d7;
+	d7 <--- b2 @ b3;
+	b4 <--- d7;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 17: ERROR – output parameter list missing opening '[' (TK_SQL)
+% Grammar rule 6: output_par ::= TK_OUTPUT TK_PARAMETER TK_LIST TK_SQL ...
+% 'output parameter list real c6]' – TK_REAL seen where TK_SQL is expected.
+% -----------------------------------------------------------------------
+_missingOutputSql input parameter list[int b2]
+output parameter list real c6];
+	type real : d7;
+	d7 <--- b2 * 1.00;
+	c6 <--- d7;
+	return [c6];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 18: ERROR – while loop body is completely empty (no statements)
+% Grammar rule 29: iterativeStmt ::= TK_WHILE ... TK_CL <stmt> <otherStmts> TK_ENDWHILE
+% Requires at least ONE <stmt>.  An empty body violates this.
+% 'endwhile' is seen immediately where <stmt> (TK_ID/TK_IF/TK_WHILE/...) is expected.
+% -----------------------------------------------------------------------
+_emptyWhile input parameter list[int b2]
+output parameter list[int b3];
+	type int : c2;
+	c2 <--- 1;
+	while(c2 <= b2)
+	endwhile
+	b3 <--- c2;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 19: ERROR – 'definetype' first argument is TK_RUID, not TK_RECORD/TK_UNION
+% Grammar rule 47: <A> ::= TK_RECORD | TK_UNION
+% 'definetype #abc as #xyz' – TK_RUID (#abc) seen where TK_RECORD/TK_UNION expected.
+% -----------------------------------------------------------------------
+_badDefineArg input parameter list[int b2]
+output parameter list[int b3];
+	record #abc
+		type int: xfield;
+		type int: yfield;
+	endrecord
+	definetype #abc as #xyz
+	type record #abc : d7;
+	d7.xfield <--- b2;
+	b3 <--- d7.xfield;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 20: ERROR – 'return [b3]' missing the final semicolon
+% Grammar rule 42: returnStmt ::= TK_RETURN <optionalReturn> TK_SEM
+% After TK_SQR the parser expects TK_SEM but finds TK_END.
+% -----------------------------------------------------------------------
+_returnNoSemi input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- b2 + 1;
+	b3 <--- d7;
+	return [b3]
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 21: CORRECT – recovery check after all errors above
+% Parser should handle this function cleanly if error recovery works.
+% -----------------------------------------------------------------------
+_correct2 input parameter list[int b2, int b3]
+output parameter list[int b4, real d5];
+	type int : c2;
+	type int : c3;
+	type real : d7;
+	c2 <--- b2 + b3;
+	c3 <--- b2 * b3;
+	d7 <--- c2 * 1.00 + c3 * 2.00;
+	if((b2 > 0) &&& (b3 > 0))
+	then
+		c2 <--- c2 + 1;
+	else
+		c3 <--- c3 - 1;
+	endif
+	while(c2 <= c3)
+		d7 <--- d7 + c2 * 1.00;
+		c2 <--- c2 + 1;
+	endwhile
+	b4 <--- c2;
+	d5 <--- d7;
+	return [b4, d5];
+end
+
+
+%===========================================================================
+% MAIN FUNCTION – mixes correct calls with additional inline errors
+%===========================================================================
+_main
+	record #simple
+		type int: xval;
+		type real: yval;
+	endrecord
+
+	union #numval
+		type int: ival;
+		type real: rval;
+	endunion
+
+	definetype union #numval as #anynum
+
+	type int : b5;
+	type int : d5cb34567;
+	type int : b3b444 : global;
+	type real : c3;
+	type real : c4bd56;
+	type int : b6;
+	type int : b7;
+	type int : c2;
+
+	b5 <--- 1;
+	d5cb34567 <--- 50;
+	b3b444 <--- 100;
+	c3 <--- 0.00;
+	c4bd56 <--- 3.14E+00;
+
+	% correct call
+	[b5] <--- call _correct1 with parameters [d5cb34567];
+	write(b5);
+
+	% ERROR 1 in main: unknown symbol '^'
+	b5 <--- b5 ^ d5cb34567;
+
+	% correct call to verify recovery
+	[b6, c3] <--- call _correct2 with parameters [d5cb34567, b3b444];
+	write(b6);
+	write(c3);
+
+	% ERROR 2 in main: real literal with single decimal digit
+	c3 <--- 5000.7;
+
+	% correct assignment and write
+	c4bd56 <--- 1.00E+00;
+	write(c4bd56);
+
+	% ERROR 3 in main: <-- (two dashes) instead of <---
+	b7 <-- d5cb34567;
+
+	% correct final write
+	write(b5);
+	return;
+end

@@ -1,0 +1,1268 @@
+%===========================================================================
+% custom9.txt  –  Comprehensive Syntactically Correct Test Case
+% CS F363 Compiler Construction, BITS Pilani 2026
+%
+% TARGET: ~1000 lines, all syntactically correct per modified LL(1) grammar.
+%
+% NEW GROUND COVERED (beyond custom5, new_correct_tc, t3, t4, t5):
+%  1.  Minimum-length identifiers (2 chars: b2, c3, d4, b3, c2 etc.)
+%  2.  Mixed primitive and record/union parameters in same parameter list
+%  3.  Functions with 3 mixed-type output parameters
+%  4.  Iterative factorial via while loop
+%  5.  Iterative power computation (base^exp) via while loop
+%  6.  Bubble-sort style double loop with swap logic
+%  7.  Fibonacci via iterative while loop
+%  8.  Long arithmetic expression chains (6+ operators, testing expPrime/termPrime)
+%  9.  Boolean expression with 4-operand chaining using &&& and @@@
+% 10.  While condition using all 6 relational ops across separate loops
+% 11.  if-then with no else – multiple consecutive ones in same function
+% 12.  Deeply nested if-else (5 levels)
+% 13.  Union field access: reading and writing ival and rval branches
+% 14.  Multiple definetype chains (3 aliases derived one from another)
+% 15.  Record with a union field, AND union with a record field
+% 16.  Function calling three other functions in sequence
+% 17.  Output parameter that is itself a record type
+% 18.  Reading and writing the same record field in one function
+% 19.  While loop whose condition involves a record field
+% 20.  Passing a union-typed parameter (syntactically valid, rule 7)
+% 21.  Two global real variables shared across functions
+% 22.  Mixed read: some plain vars, some record fields, in one function
+% 23.  Function with 4 input parameters and 3 output parameters
+% 24.  Minimum-body function: only one assignment + return (no declarations)
+% 25.  Long idList: 5-element return list and 5-element function call output
+% 26.  Chained dot access on the LHS of assignment (write side)
+% 27.  Chained dot access on the RHS inside an arithmetic expression
+% 28.  Nested while inside else-branch
+% 29.  if-then-else where else contains another if-then (no else)
+% 30.  Very long comment lines for stress-testing the lexer comment handler
+%===========================================================================
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 1: Iterative factorial
+% Inputs: int b2 (n)
+% Output: int b3 (n!)
+% Uses: while loop, multiplication, minimum-length IDs b2/b3/c2/d7
+% -----------------------------------------------------------------------
+_factorial input parameter list[int b2]
+output parameter list[int b3];
+	type int : c2;
+	type int : d7;
+	c2 <--- 1;
+	d7 <--- 1;
+	while(c2 <= b2)
+		d7 <--- d7 * c2;
+		c2 <--- c2 + 1;
+	endwhile
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 2: Iterative power  base^exp
+% Inputs: int b2 (base), int b3 (exponent, >= 0)
+% Output: int b4
+% Tests: while with != relational op, separate counter
+% -----------------------------------------------------------------------
+_power input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : c2;
+	type int : d7;
+	c2 <--- 0;
+	d7 <--- 1;
+	while(c2 != b3)
+		d7 <--- d7 * b2;
+		c2 <--- c2 + 1;
+	endwhile
+	b4 <--- d7;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 3: Iterative Fibonacci
+% Inputs: int b2 (n, 1-indexed)
+% Output: int b3 (fib(n))
+% Tests: two running variables, reassignment pattern, while with >=
+% -----------------------------------------------------------------------
+_fibonacci input parameter list[int b2]
+output parameter list[int b3];
+	type int : c2;
+	type int : c3;
+	type int : d4;
+	type int : d7;
+	c2 <--- 0;
+	c3 <--- 1;
+	d7 <--- 1;
+	if(b2 == 1)
+	then
+		b3 <--- 0;
+	else
+		if(b2 == 2)
+		then
+			b3 <--- 1;
+		else
+			d4 <--- 2;
+			while(d4 <= b2)
+				d7 <--- c2 + c3;
+				c2 <--- c3;
+				c3 <--- d7;
+				d4 <--- d4 + 1;
+			endwhile
+			b3 <--- d7;
+		endif
+	endif
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 4: Sum of squares  1^2 + 2^2 + ... + n^2
+% Inputs: int b2 (n)
+% Output: int b3
+% Tests: long arithmetic RHS  c2 * c2  and accumulator pattern
+% -----------------------------------------------------------------------
+_sumOfSquares input parameter list[int b2]
+output parameter list[int b3];
+	type int : c2;
+	type int : d7;
+	c2 <--- 1;
+	d7 <--- 0;
+	while(c2 <= b2)
+		d7 <--- d7 + c2 * c2;
+		c2 <--- c2 + 1;
+	endwhile
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 5: GCD via Euclidean subtraction loop
+% Inputs: int b2, int b3
+% Output: int b4
+% Tests: while with != and two nested if-then (no else), 2-char IDs
+% -----------------------------------------------------------------------
+_gcd input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : c2;
+	type int : c3;
+	c2 <--- b2;
+	c3 <--- b3;
+	while(c2 != c3)
+		if(c2 > c3)
+		then
+			c2 <--- c2 - c3;
+		endif
+		if(c3 > c2)
+		then
+			c3 <--- c3 - c2;
+		endif
+	endwhile
+	b4 <--- c2;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 6: Absolute difference of two reals
+% Inputs: real d3, real d4
+% Output: real d5
+% Tests: if-then-else on real comparison, negation via subtraction
+% -----------------------------------------------------------------------
+_absDiff input parameter list[real d3, real d4]
+output parameter list[real d5];
+	type real : c4;
+	if(d3 >= d4)
+	then
+		c4 <--- d3 - d4;
+	else
+		c4 <--- d4 - d3;
+	endif
+	d5 <--- c4;
+	return [d5];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 7: Clamp a real value into [lo, hi]
+% Inputs: real d3 (value), real d4 (lo), real d5 (hi)
+% Output: real d6
+% Tests: nested if-then-else, 3 real parameters, 1 real output
+% -----------------------------------------------------------------------
+_clamp input parameter list[real d3, real d4, real d5]
+output parameter list[real d6];
+	if(d3 < d4)
+	then
+		d6 <--- d4;
+	else
+		if(d3 > d5)
+		then
+			d6 <--- d5;
+		else
+			d6 <--- d3;
+		endif
+	endif
+	return [d6];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 8: Long arithmetic expression (tests expPrime / termPrime depth)
+% Expression: ((a+b)*c - (d/e+f)) * (a-b) / c + d*e - f
+% Inputs: 6 ints b2..b7 (using b-series + c-series mix)
+% Output: real d3
+% Tests: deeply chained +,-,*,/ requiring multiple expPrime/termPrime nodes
+% -----------------------------------------------------------------------
+_longArith input parameter list[int b2, int b3, int b4, int b5, int b6, int b7]
+output parameter list[real d3];
+	type real : c4;
+	type real : c5;
+	type real : c6;
+	c4 <--- (b2 + b3) * b4 - (b5 / b6 + b7);
+	c5 <--- (b2 - b3) / b4 + b5 * b6 - b7;
+	c6 <--- c4 * c5 + b2 * b3 - b4 * b5 + b6 * b7;
+	d3 <--- c6 + c4 - c5 + b2 + b3 + b4 + b5 + b6 + b7;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 9: Boolean stress test
+% Tests: 4-operand &&& chain, @@@ mix, NOT nested two levels deep
+% Inputs: int b2 b3 b4 b5
+% Output: int b6 (encoded result)
+% -----------------------------------------------------------------------
+_boolStress input parameter list[int b2, int b3, int b4, int b5]
+output parameter list[int b6];
+	type int : d7;
+	d7 <--- 0;
+	% 4-way &&& chain: (A &&& B) is itself a bool expression, then &&& C
+	if(((b2 > 0) &&& (b3 > 0)) &&& ((b4 > 0) &&& (b5 > 0)))
+	then
+		d7 <--- d7 + 1;
+	endif
+	% @@@ mix with &&& sub-expression
+	if(((b2 < 0) @@@ (b3 < 0)) &&& ((b4 != 0) @@@ (b5 != 0)))
+	then
+		d7 <--- d7 + 2;
+	endif
+	% Double NOT
+	if(~(~(b2 == b3)))
+	then
+		d7 <--- d7 + 4;
+	endif
+	% NOT of a compound expression
+	if(~((b2 > b3) &&& (b4 > b5)))
+	then
+		d7 <--- d7 + 8;
+	endif
+	% All six relational ops in one function, six consecutive ifs
+	if(b2 < b5)
+	then
+		d7 <--- d7 + 16;
+	endif
+	if(b2 <= b5)
+	then
+		d7 <--- d7 + 32;
+	endif
+	if(b2 > b5)
+	then
+		d7 <--- d7 + 64;
+	endif
+	if(b2 >= b5)
+	then
+		d7 <--- d7 + 128;
+	endif
+	if(b2 == b5)
+	then
+		d7 <--- d7 + 256;
+	endif
+	if(b2 != b5)
+	then
+		d7 <--- d7 + 512;
+	endif
+	b6 <--- d7;
+	return [b6];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 10: Five-level deeply nested if-else
+% Inputs: int b2 b3 b4 b5 b6
+% Output: int b7
+% Tests: rule 30-a/31-a to depth 5; each branch takes unique value
+% -----------------------------------------------------------------------
+_deepIf5 input parameter list[int b2, int b3, int b4, int b5, int b6]
+output parameter list[int b7];
+	type int : d7;
+	d7 <--- 0;
+	if(b2 > 0)
+	then
+		if(b3 > 0)
+		then
+			if(b4 > 0)
+			then
+				if(b5 > 0)
+				then
+					if(b6 > 0)
+					then
+						d7 <--- 11111;
+					else
+						d7 <--- 11110;
+					endif
+				else
+					if(b6 > 0)
+					then
+						d7 <--- 11101;
+					else
+						d7 <--- 11100;
+					endif
+				endif
+			else
+				if(b5 > 0)
+				then
+					d7 <--- 11010;
+				else
+					d7 <--- 11000;
+				endif
+			endif
+		else
+			if(b4 > 0)
+			then
+				d7 <--- 10100;
+			else
+				d7 <--- 10000;
+			endif
+		endif
+	else
+		if(b3 > 0)
+		then
+			if(b4 > 0)
+			then
+				d7 <--- 1100;
+			else
+				d7 <--- 1000;
+			endif
+		else
+			d7 <--- 100;
+		endif
+	endif
+	b7 <--- d7;
+	return [b7];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 11: Bubble sort on 5 virtual slots using record
+% Record holds 5 integer slots.  Outer + inner while, swap via temp.
+% Tests: while-inside-while, record field LHS assignment, >=, <=
+% -----------------------------------------------------------------------
+_bubbleSort5 input parameter list[record #arrfive b3c45]
+output parameter list[record #arrfive d3];
+	type record #arrfive : c4b56;
+	type int : b5;
+	type int : b6;
+	type int : d7;
+	type int : c2;
+	c4b56 <--- b3c45;
+	b5 <--- 1;
+	while(b5 <= 4)
+		b6 <--- 1;
+		while(b6 <= 4)
+			if(c4b56.sa > c4b56.sb)
+			then
+				d7 <--- c4b56.sa;
+				c4b56.sa <--- c4b56.sb;
+				c4b56.sb <--- d7;
+			endif
+			if(c4b56.sb > c4b56.sc)
+			then
+				d7 <--- c4b56.sb;
+				c4b56.sb <--- c4b56.sc;
+				c4b56.sc <--- d7;
+			endif
+			if(c4b56.sc > c4b56.sd)
+			then
+				d7 <--- c4b56.sc;
+				c4b56.sc <--- c4b56.sd;
+				c4b56.sd <--- d7;
+			endif
+			b6 <--- b6 + 1;
+		endwhile
+		b5 <--- b5 + 1;
+	endwhile
+	d3 <--- c4b56;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 12: Three output parameters of mixed types
+% Inputs: int b2, real d3
+% Outputs: int b4, real d5, int b6
+% Tests: 3-entry output parameter list, 3-entry return list
+% -----------------------------------------------------------------------
+_tripleOut input parameter list[int b2, real d3]
+output parameter list[int b4, real d5, int b6];
+	type int : c2;
+	type real : c3;
+	c2 <--- b2 * b2;
+	c3 <--- d3 * d3;
+	b4 <--- c2 + b2;
+	d5 <--- c3 + d3;
+	b6 <--- c2 - b2;
+	return [b4, d5, b6];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 13: Output parameter is a record type
+% Inputs: real d3 (x), real d4 (y)
+% Output: record #planept b3c45
+% Tests: record-typed output param; field assignment in function body
+% -----------------------------------------------------------------------
+_makePoint input parameter list[real d3, real d4]
+output parameter list[record #planept b3c45];
+	b3c45.px <--- d3;
+	b3c45.py <--- d4;
+	return [b3c45];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 14: Receiving a union-typed parameter (syntactically valid)
+% Inputs: union #numval b3c45, int b2
+% Output: real d3
+% Tests: rule 7 / rule 10-a allowing union in parameter list
+% -----------------------------------------------------------------------
+_handleUnion input parameter list[union #numval b3c45, int b2]
+output parameter list[real d3];
+	type real : c4;
+	c4 <--- b3c45.rval + b2 * 1.00;
+	d3 <--- c4;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 15: Reading mixed plain vars and record fields in one function
+% Inputs: record #planept b3c45
+% Outputs: real d3, real d4
+% Tests: read(plain_var), read(rec.field), consecutive reads
+% -----------------------------------------------------------------------
+_mixedRead input parameter list[record #planept b3c45]
+output parameter list[real d3, real d4];
+	type real : c4;
+	read(c4);
+	read(b3c45.px);
+	read(b3c45.py);
+	d3 <--- b3c45.px + c4;
+	d4 <--- b3c45.py - c4;
+	return [d3, d4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 16: While condition on a record field
+% The loop counter IS a record field (b3c45.cnt)
+% Inputs: record #counter b3c45, int b2
+% Output: int b3
+% Tests: <var> in while boolExpr being a record-field variable
+% -----------------------------------------------------------------------
+_whileOnField input parameter list[record #counter b3c45, int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- 0;
+	while(b3c45.cnt <= b2)
+		d7 <--- d7 + b3c45.cnt;
+		b3c45.cnt <--- b3c45.cnt + 1;
+	endwhile
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 17: Nested while inside an else-branch
+% Inputs: int b2, int b3
+% Output: int b4
+% Tests: else-branch containing a full while loop (rule 31-a else contains stmts)
+% -----------------------------------------------------------------------
+_whileInElse input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : c2;
+	type int : d7;
+	d7 <--- 0;
+	if(b2 > b3)
+	then
+		d7 <--- b2 - b3;
+	else
+		c2 <--- 1;
+		while(c2 <= b3)
+			d7 <--- d7 + c2;
+			c2 <--- c2 + 1;
+		endwhile
+	endif
+	b4 <--- d7;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 18: else contains another if-then (no else on inner)
+% Inputs: int b2, int b3, int b4
+% Output: int b5
+% Tests: else → stmt(if-then, no else) → endif  (rule 31-a branch)
+% -----------------------------------------------------------------------
+_elseIfNoElse input parameter list[int b2, int b3, int b4]
+output parameter list[int b5];
+	type int : d7;
+	d7 <--- 0;
+	if(b2 > b3)
+	then
+		d7 <--- 1;
+	else
+		if(b3 > b4)
+		then
+			d7 <--- 2;
+		endif
+	endif
+	b5 <--- d7;
+	return [b5];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 19: Chained dot access on BOTH LHS and RHS in same statement
+% Inputs: record #segment b3c45
+% Output: record #segment d3c4
+% Tests: singleOrRecId (option_single_constructed) on both sides of <---
+% -----------------------------------------------------------------------
+_copySegment input parameter list[record #segment b3c45]
+output parameter list[record #segment d3c4];
+	d3c4.bx <--- b3c45.bx;
+	d3c4.by <--- b3c45.by;
+	d3c4.ex <--- b3c45.ex;
+	d3c4.ey <--- b3c45.ey;
+	return [d3c4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 20: Two global reals shared across functions
+% Inputs: real d3, real d4
+% (No output – void: epsilon output_par)
+% Tests: global real declarations, void function, two globals
+% -----------------------------------------------------------------------
+_setGlobals input parameter list[real d3, real d4];
+	type real : b3c4 : global;
+	type real : c4b5 : global;
+	b3c4 <--- d3;
+	c4b5 <--- d4;
+	write(b3c4);
+	write(c4b5);
+	return;
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 21: Function that calls three other functions in sequence
+% Inputs: int b2
+% Output: int b3, real d4, int b5
+% Tests: multiple sequential function calls in one function body
+% -----------------------------------------------------------------------
+_multiCallSeq input parameter list[int b2]
+output parameter list[int b3, real d4, int b5];
+	type int : c2;
+	type real : c3;
+	type real : d5;
+	type real : d6;
+	type int : d7;
+	[c2] <--- call _factorial with parameters [b2];
+	d5 <--- b2 * 1.00;
+	d6 <--- c2 * 1.00;
+	[c3] <--- call _absDiff with parameters [d5, d6];
+	[d7] <--- call _fibonacci with parameters [b2];
+	b3 <--- c2;
+	d4 <--- c3;
+	b5 <--- d7;
+	return [b3, d4, b5];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 22: Five-element return list and matching output call
+% Inputs: int b2
+% Outputs: int b3, int b4, int b5, int b6, int b7
+% Tests: idList with 5 entries (4 TK_COMMA separators)
+% -----------------------------------------------------------------------
+_quintupleOut input parameter list[int b2]
+output parameter list[int b3, int b4, int b5, int b6, int b7];
+	type int : c2;
+	type int : c3;
+	type int : d4;
+	type int : d5;
+	c2 <--- b2 + 1;
+	c3 <--- b2 + 2;
+	d4 <--- b2 + 3;
+	d5 <--- b2 + 4;
+	b3 <--- b2;
+	b4 <--- c2;
+	b5 <--- c3;
+	b6 <--- d4;
+	b7 <--- d5;
+	return [b3, b4, b5, b6, b7];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 23: Minimum-body function (no declarations at all)
+% Inputs: int b2, int b3
+% Output: int b4
+% Tests: stmts with typeDefinitions=eps, declarations=eps; only otherStmts
+% -----------------------------------------------------------------------
+_minBody input parameter list[int b2, int b3]
+output parameter list[int b4];
+	b4 <--- b2 + b3;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 24: Deeply nested record field on LHS: a.b.c.d.field <---
+% Inputs: record #ship b3c45
+% Output: record #ship d3
+% Tests: moreExpansions applied 3 times on the LHS
+% -----------------------------------------------------------------------
+_deepLhsWrite input parameter list[record #ship b3c45]
+output parameter list[record #ship d3];
+	d3 <--- b3c45;
+	d3.hull.deck.cabin.width <--- 10;
+	d3.hull.deck.cabin.height <--- 5;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 25: Union ival and rval branches both accessed
+% Inputs: union #numval b3c45, int b2
+% Output: int b3
+% Tests: union field access on both branches ival and rval
+% -----------------------------------------------------------------------
+_unionBothBranches input parameter list[union #numval b3c45, int b2]
+output parameter list[int b3];
+	type int : c2;
+	type real : d4;
+	c2 <--- b3c45.ival + b2;
+	d4 <--- b3c45.rval + b2 * 1.00;
+	write(c2);
+	write(d4);
+	b3 <--- c2;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 26: All while-condition relational ops across 6 separate loops
+% Each loop runs exactly once or not at all, to keep runtime short.
+% Inputs: int b2, int b3
+% Output: int b4 (bitmask of which loops executed)
+% Tests: six distinct relational operators inside while conditions
+% -----------------------------------------------------------------------
+_whileRelOps input parameter list[int b2, int b3]
+output parameter list[int b4];
+	type int : d7;
+	type int : c2;
+	d7 <--- 0;
+	% while with <
+	c2 <--- b2;
+	while(c2 < b3)
+		d7 <--- d7 + 1;
+		c2 <--- b3;
+	endwhile
+	% while with <=
+	c2 <--- b2;
+	while(c2 <= b2)
+		d7 <--- d7 + 2;
+		c2 <--- b2 + 1;
+	endwhile
+	% while with >
+	c2 <--- b3;
+	while(c2 > b2)
+		d7 <--- d7 + 4;
+		c2 <--- b2;
+	endwhile
+	% while with >=
+	c2 <--- b3;
+	while(c2 >= b3)
+		d7 <--- d7 + 8;
+		c2 <--- b3 - 1;
+	endwhile
+	% while with ==
+	c2 <--- b2;
+	while(c2 == b2)
+		d7 <--- d7 + 16;
+		c2 <--- b2 + 1;
+	endwhile
+	% while with !=
+	c2 <--- b2;
+	while(c2 != b3)
+		d7 <--- d7 + 32;
+		c2 <--- b3;
+	endwhile
+	b4 <--- d7;
+	return [b4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 27: Real arithmetic with every exponent form in one function
+% Inputs: int b2
+% Outputs: real d3, real d4
+% Tests: E+nn, E-nn, E+00, plain dd.dd, negative-scaled values
+% -----------------------------------------------------------------------
+_realForms input parameter list[int b2]
+output parameter list[real d3, real d4];
+	type real : c4;
+	type real : c5;
+	type real : c6;
+	type real : c7;
+	c4 <--- 12.34E+06;
+	c5 <--- 99.99E-03;
+	c6 <--- 00.01E+00;
+	c7 <--- 55.55E-99;
+	d3 <--- c4 + c5 - c6 + b2 * 1.00;
+	d4 <--- c7 * 2.00 + c4 / 2.00 - c5 + c6;
+	return [d3, d4];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 28: definetype chain inside a function body
+% record #base  →  #aliasa  →  #aliasb (via two definetypes in same stmts)
+% Inputs: int b2
+% Output: int b3
+% Tests: two definetypestmt nodes inside one function's typeDefinitions
+% -----------------------------------------------------------------------
+_localAliasChain input parameter list[int b2]
+output parameter list[int b3];
+	record #base
+		type int: aa;
+		type int: bb;
+	endrecord
+	definetype record #base as #aliasa
+	definetype record #base as #aliasb
+	type record #base : d7;
+	type #aliasa : c4b5;
+	type #aliasb : c5b6;
+	d7.aa <--- b2;
+	d7.bb <--- b2 + 1;
+	c4b5.aa <--- d7.aa * 2;
+	c5b6.bb <--- d7.bb * 3;
+	b3 <--- c4b5.aa + c5b6.bb;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 29: Record with a union field (cross-nesting)
+% Inputs: record #tagged b3c45
+% Output: int b3
+% Tests: b3c45.kind.ival and b3c45.kind.rval  (record.union_field.branch)
+% -----------------------------------------------------------------------
+_taggedAccess input parameter list[record #tagged b3c45]
+output parameter list[int b3];
+	type int : c2;
+	type real : d4;
+	c2 <--- b3c45.id;
+	d4 <--- b3c45.kind.rval;
+	write(c2);
+	write(d4);
+	b3 <--- c2;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 30: Union with a record field (cross-nesting, other direction)
+% Inputs: union #either b3c45, int b2
+% Output: real d3
+% Tests: b3c45.pval.px  (union_field.record_field.field)
+% -----------------------------------------------------------------------
+_unionWithRecord input parameter list[union #either b3c45, int b2]
+output parameter list[real d3];
+	type real : c4;
+	c4 <--- b3c45.pval.px + b3c45.pval.py;
+	d3 <--- c4 + b2 * 1.00;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 31: 4-input, 3-output mixed types
+% Inputs: int b2, int b3, real d4, real d5
+% Outputs: int b6, real d7, int b7
+% Tests: rule 7/parameter_list mixed primitive types, 3-entry output list
+% -----------------------------------------------------------------------
+_fourInThreeOut input parameter list[int b2, int b3, real d4, real d5]
+output parameter list[int b6, real d7, int b7];
+	type int : c2;
+	type real : c3;
+	c2 <--- b2 * b3;
+	c3 <--- d4 * d5;
+	b6 <--- c2 + b2;
+	d7 <--- c3 - d4;
+	b7 <--- c2 - b3;
+	return [b6, d7, b7];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 32: Sequential reads into multiple record fields, then compute
+% Inputs: record #tvec b3c45
+% Output: real d3
+% Tests: multiple read(rec.field) followed by arithmetic on those fields
+% -----------------------------------------------------------------------
+_vecMagnitude input parameter list[record #tvec b3c45]
+output parameter list[real d3];
+	type real : c4;
+	type real : c5;
+	read(b3c45.vx);
+	read(b3c45.vy);
+	read(b3c45.vz);
+	c4 <--- b3c45.vx * b3c45.vx + b3c45.vy * b3c45.vy;
+	c5 <--- c4 + b3c45.vz * b3c45.vz;
+	d3 <--- c5;
+	return [d3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 33: Inline while in main-like function + deep boolean
+% Counts multiples of 3 up to n using (c2 * 3 <= b2) style check.
+% Inputs: int b2
+% Output: int b3 (count of multiples of 3 from 3 to b2)
+% Tests: while condition with multiplication on LHS of relational op
+% -----------------------------------------------------------------------
+_countMult3 input parameter list[int b2]
+output parameter list[int b3];
+	type int : c2;
+	type int : c3;
+	type int : d7;
+	c2 <--- 1;
+	d7 <--- 0;
+	c3 <--- c2 * 3;
+	while(c3 <= b2)
+		d7 <--- d7 + 1;
+		c2 <--- c2 + 1;
+		c3 <--- c2 * 3;
+	endwhile
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 34: Consecutive if-then (no else) blocks (5 in a row)
+% Tests: 5 separate if-then-endif nodes in otherStmts chain
+% Inputs: int b2
+% Output: int b3
+% -----------------------------------------------------------------------
+_fiveIfNoElse input parameter list[int b2]
+output parameter list[int b3];
+	type int : d7;
+	d7 <--- 0;
+	if(b2 > 0)
+	then
+		d7 <--- d7 + 1;
+	endif
+	if(b2 > 10)
+	then
+		d7 <--- d7 + 2;
+	endif
+	if(b2 > 100)
+	then
+		d7 <--- d7 + 4;
+	endif
+	if(b2 > 1000)
+	then
+		d7 <--- d7 + 8;
+	endif
+	if(b2 > 10000)
+	then
+		d7 <--- d7 + 16;
+	endif
+	b3 <--- d7;
+	return [b3];
+end
+
+
+% -----------------------------------------------------------------------
+% FUNCTION 35: Passing a record as parameter AND returning same record type
+% This is the same type for input and output – tests symmetry.
+% Inputs: record #planept b3c45, real d3
+% Output: record #planept d4c5
+% -----------------------------------------------------------------------
+_translatePoint input parameter list[record #planept b3c45, real d3]
+output parameter list[record #planept d4c5];
+	d4c5.px <--- b3c45.px + d3;
+	d4c5.py <--- b3c45.py + d3;
+	return [d4c5];
+end
+
+
+%===========================================================================
+% MAIN FUNCTION
+% Uses ALL 35 functions above.
+% Defines a rich type system: 10+ records, 2 unions, 4 definetypes.
+% Exercises: every call style, read from record, deep field access in main,
+%            while/if interleaved, global vars, numeric literal writes,
+%            five-output call, three-output call, mixed-type calls.
+%===========================================================================
+_main
+	% =====================================================================
+	% TYPE DEFINITIONS SECTION
+	% =====================================================================
+
+	record #arrfive
+		type int: sa;
+		type int: sb;
+		type int: sc;
+		type int: sd;
+		type int: se;
+	endrecord
+
+	record #planept
+		type real: px;
+		type real: py;
+	endrecord
+
+	record #segment
+		type real: bx;
+		type real: by;
+		type real: ex;
+		type real: ey;
+	endrecord
+
+	record #tvec
+		type real: vx;
+		type real: vy;
+		type real: vz;
+	endrecord
+
+	record #counter
+		type int: cnt;
+		type int: limit;
+	endrecord
+
+	% cabin record for deep LHS write test
+	record #cabin
+		type int: width;
+		type int: height;
+	endrecord
+
+	record #deck
+		type #cabin: cabin;
+		type int: level;
+	endrecord
+
+	record #hull
+		type #deck: deck;
+		type int: mass;
+	endrecord
+
+	record #ship
+		type #hull: hull;
+		type int: flag;
+	endrecord
+
+	% tagged union record
+	union #numval
+		type int: ival;
+		type real: rval;
+	endunion
+
+	record #tagged
+		type int: id;
+		type #numval: kind;
+	endrecord
+
+	% union containing a record field
+	union #either
+		type #planept: pval;
+		type int: oval;
+	endunion
+
+	% definetype chains
+	definetype record #planept as #pt
+	definetype union #numval as #num
+	definetype record #segment as #seg
+	definetype record #arrfive as #array
+
+	% =====================================================================
+	% DECLARATIONS SECTION
+	% =====================================================================
+	type int : b5;
+	type int : d5cb34567;
+	type int : b3b444 : global;
+	type real : c3;
+	type real : c4bd56;
+	type int : b6;
+	type int : b7;
+	type int : c2;
+	type int : c3b;
+	type int : d3c;
+	type real : d4c;
+	type real : d5c;
+	type record #arrfive : b3c45;
+	type record #planept : d4;
+	type record #planept : b7c234;
+	type record #segment : d7c23;
+	type record #tvec : c2c345;
+	type record #counter : b2b345;
+	type record #ship : c3b456;
+	type record #tagged : d4b567;
+	type union #numval : b5c6;
+	type union #either : c4b567;
+
+	% =====================================================================
+	% STATEMENTS SECTION
+	% =====================================================================
+
+	% ---- initialise scalars ----
+	b5 <--- 1;
+	d5cb34567 <--- 10;
+	b3b444 <--- 7;
+	c3 <--- 0.00;
+	c4bd56 <--- 3.14E+00;
+
+	% ---- FUNCTION 1: factorial ----
+	[b6] <--- call _factorial with parameters [d5cb34567];
+	write(b6);
+
+	% ---- FUNCTION 2: power ----
+	[b7] <--- call _power with parameters [b3b444, b5];
+	write(b7);
+
+	% ---- FUNCTION 3: fibonacci ----
+	[c2] <--- call _fibonacci with parameters [d5cb34567];
+	write(c2);
+
+	% ---- FUNCTION 4: sumOfSquares ----
+	[c3b] <--- call _sumOfSquares with parameters [d5cb34567];
+	write(c3b);
+
+	% ---- FUNCTION 5: gcd ----
+	[d3c] <--- call _gcd with parameters [d5cb34567, b3b444];
+	write(d3c);
+
+	% ---- FUNCTION 6: absDiff ----
+	d5c <--- 9.99E+00;
+	[c3] <--- call _absDiff with parameters [c4bd56, d5c];
+	write(c3);
+
+	% ---- FUNCTION 7: clamp ----
+	d4c <--- 0.00;
+	d5c <--- 1.00;
+	[d4c] <--- call _clamp with parameters [c3, d4c, d5c];
+	write(d4c);
+
+	% ---- FUNCTION 8: longArith ----
+	[c3] <--- call _longArith with parameters [b5, b6, b7, c2, c3b, d3c];
+	write(c3);
+
+	% ---- FUNCTION 9: boolStress ----
+	[b6] <--- call _boolStress with parameters [b5, d5cb34567, b3b444, c2];
+	write(b6);
+
+	% ---- FUNCTION 10: deepIf5 ----
+	[b7] <--- call _deepIf5 with parameters [b5, d5cb34567, b3b444, c2, c3b];
+	write(b7);
+
+	% ---- FUNCTION 11: bubbleSort5 ----
+	b3c45.sa <--- 50;
+	b3c45.sb <--- 30;
+	b3c45.sc <--- 10;
+	b3c45.sd <--- 40;
+	b3c45.se <--- 20;
+	[b3c45] <--- call _bubbleSort5 with parameters [b3c45];
+	write(b3c45.sa);
+	write(b3c45.sb);
+	write(b3c45.sc);
+	write(b3c45.sd);
+	write(b3c45.se);
+
+	% ---- FUNCTION 12: tripleOut ----
+	[b6, d4c, b7] <--- call _tripleOut with parameters [d5cb34567, c4bd56];
+	write(b6);
+	write(d4c);
+	write(b7);
+
+	% ---- FUNCTION 13: makePoint ----
+	d4c <--- 3.00;
+	d5c <--- 4.00;
+	[d4] <--- call _makePoint with parameters [d4c, d5c];
+	write(d4.px);
+	write(d4.py);
+
+	% ---- FUNCTION 14: handleUnion ----
+	b5c6.rval <--- 2.71E+00;
+	[c3] <--- call _handleUnion with parameters [b5c6, d5cb34567];
+	write(c3);
+
+	% ---- FUNCTION 15: mixedRead ----
+	d4.px <--- 5.00;
+	d4.py <--- 6.00;
+	[d4c, d5c] <--- call _mixedRead with parameters [d4];
+	write(d4c);
+	write(d5c);
+
+	% ---- FUNCTION 16: whileOnField ----
+	b2b345.cnt <--- 1;
+	b2b345.limit <--- 10;
+	[c3b] <--- call _whileOnField with parameters [b2b345, d5cb34567];
+	write(c3b);
+
+	% ---- FUNCTION 17: whileInElse ----
+	[d3c] <--- call _whileInElse with parameters [b3b444, d5cb34567];
+	write(d3c);
+
+	% ---- FUNCTION 18: elseIfNoElse ----
+	[b6] <--- call _elseIfNoElse with parameters [b5, b3b444, d5cb34567];
+	write(b6);
+
+	% ---- FUNCTION 19: copySegment ----
+	d7c23.bx <--- 1.00;
+	d7c23.by <--- 2.00;
+	d7c23.ex <--- 3.00;
+	d7c23.ey <--- 4.00;
+	[d7c23] <--- call _copySegment with parameters [d7c23];
+	write(d7c23.bx);
+	write(d7c23.ey);
+
+	% ---- FUNCTION 20: setGlobals (void) ----
+	d4c <--- 1.11E+00;
+	d5c <--- 2.22E+00;
+	call _setGlobals with parameters [d4c, d5c];
+
+	% ---- FUNCTION 22: quintupleOut – five-element capture ----
+	[b5, b6, b7, c2, c3b] <--- call _quintupleOut with parameters [d5cb34567];
+	write(b5);
+	write(b6);
+	write(b7);
+	write(c2);
+	write(c3b);
+
+	% ---- FUNCTION 23: minBody ----
+	[d3c] <--- call _minBody with parameters [b5, b6];
+	write(d3c);
+
+	% ---- FUNCTION 24: deepLhsWrite ----
+	c3b456.hull.deck.cabin.width <--- 0;
+	c3b456.hull.deck.cabin.height <--- 0;
+	c3b456.hull.deck.level <--- 1;
+	c3b456.hull.mass <--- 500;
+	c3b456.flag <--- 0;
+	[c3b456] <--- call _deepLhsWrite with parameters [c3b456];
+	write(c3b456.hull.deck.cabin.width);
+	write(c3b456.hull.deck.cabin.height);
+
+	% ---- FUNCTION 25: unionBothBranches ----
+	b5c6.ival <--- 42;
+	b5c6.rval <--- 3.14E+00;
+	[c3b] <--- call _unionBothBranches with parameters [b5c6, b5];
+	write(c3b);
+
+	% ---- FUNCTION 26: whileRelOps ----
+	[d3c] <--- call _whileRelOps with parameters [b3b444, d5cb34567];
+	write(d3c);
+
+	% ---- FUNCTION 27: realForms ----
+	[d4c, d5c] <--- call _realForms with parameters [b5];
+	write(d4c);
+	write(d5c);
+
+	% ---- FUNCTION 28: localAliasChain ----
+	[c3b] <--- call _localAliasChain with parameters [d5cb34567];
+	write(c3b);
+
+	% ---- FUNCTION 29: taggedAccess ----
+	d4b567.id <--- 99;
+	d4b567.kind.rval <--- 7.77E+00;
+	[d3c] <--- call _taggedAccess with parameters [d4b567];
+	write(d3c);
+
+	% ---- FUNCTION 30: unionWithRecord ----
+	c4b567.pval.px <--- 3.00;
+	c4b567.pval.py <--- 4.00;
+	[c3] <--- call _unionWithRecord with parameters [c4b567, b5];
+	write(c3);
+
+	% ---- FUNCTION 31: fourInThreeOut ----
+	[b6, d4c, b7] <--- call _fourInThreeOut with parameters [b3b444, d5cb34567, c4bd56, d4c];
+	write(b6);
+	write(d4c);
+	write(b7);
+
+	% ---- FUNCTION 32: vec3Magnitude (reads inside) ----
+	[c3] <--- call _vecMagnitude with parameters [c2c345];
+	write(c3);
+
+	% ---- FUNCTION 33: countMult3 ----
+	[c3b] <--- call _countMult3 with parameters [d5cb34567];
+	write(c3b);
+
+	% ---- FUNCTION 34: fiveIfNoElse ----
+	[d3c] <--- call _fiveIfNoElse with parameters [d5cb34567];
+	write(d3c);
+
+	% ---- FUNCTION 35: translatePoint ----
+	b7c234.px <--- 1.00;
+	b7c234.py <--- 2.00;
+	[b7c234] <--- call _translatePoint with parameters [b7c234, c4bd56];
+	write(b7c234.px);
+	write(b7c234.py);
+
+	% ---- inline main logic: while + nested if ----
+	b5 <--- 1;
+	while(b5 <= d5cb34567)
+		if((b5 > 3) &&& (b5 < 8))
+		then
+			write(b5);
+		else
+			if(b5 == d5cb34567)
+			then
+				write(b5);
+			endif
+		endif
+		b5 <--- b5 + 1;
+	endwhile
+
+	% ---- inline main logic: deeply nested if (3 levels) ----
+	if(d5cb34567 > 0)
+	then
+		if(b3b444 > 0)
+		then
+			if(c2 >= 0)
+			then
+				write(d5cb34567);
+			else
+				write(b3b444);
+			endif
+		else
+			write(c2);
+		endif
+	endif
+
+	% ---- inline main: real arithmetic chain ----
+	d4c <--- (c4bd56 + 1.00) * (c4bd56 - 1.00) / (c4bd56 + 2.00) + 9.99E-01;
+	write(d4c);
+
+	% ---- inline main: global access after _setGlobals ----
+	write(999);
+	write(0.00);
+
+	return;
+end
