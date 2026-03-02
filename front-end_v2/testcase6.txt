@@ -1,10 +1,7 @@
 %===========================================================================
-% custom9.txt  –  Comprehensive Syntactically Correct Test Case
-% CS F363 Compiler Construction, BITS Pilani 2026
+% custom_parser3.txt  –  Comprehensive Syntactically Correct Test Case
 %
-% TARGET: ~1000 lines, all syntactically correct per modified LL(1) grammar.
-%
-% NEW GROUND COVERED (beyond custom5, new_correct_tc, t3, t4, t5):
+% GROUND COVERED:
 %  1.  Minimum-length identifiers (2 chars: b2, c3, d4, b3, c2 etc.)
 %  2.  Mixed primitive and record/union parameters in same parameter list
 %  3.  Functions with 3 mixed-type output parameters

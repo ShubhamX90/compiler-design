@@ -1,6 +1,5 @@
 %===========================================================================
-% new_errors_tc.txt  –  Comprehensive ERROR test case (new)
-% Language: ERPLAG / CS F363 custom language, BITS Pilani 2026
+% custom_parser2.txt  –  Comprehensive ERROR test case
 %
 % Every function (except the two marked CORRECT) contains EXACTLY ONE
 % deliberate error.  Each error type is DIFFERENT from those in custom6.

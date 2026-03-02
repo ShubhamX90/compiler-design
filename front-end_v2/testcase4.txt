@@ -1,7 +1,7 @@
 %===========================================================================
-% custom_parser1.txt
+% custom_parser1.txt  –  Comprehensive CORRECT test case
 %
-% KEY FEATURES EXERCISED (not fully covered by existing t3/t4/t5/custom5):
+% KEY FEATURES EXERCISED:
 %   1.  Void functions  – output_par = epsilon  (no output parameter list)
 %   2.  Void function CALLS  – no output capture on the calling side
 %   3.  All three boolean expression forms in a single function
