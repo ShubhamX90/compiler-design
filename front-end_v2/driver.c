@@ -15,16 +15,21 @@ int main(int argc, char *argv[])
 {
   printImplementationStatus();
 
-  if (argc < 3)
+  if (argc < 2)
   {
-    fprintf(stderr, "Usage: %s <source_file.txt> <parsetree_output.txt>\n",
-            argv[0]);
-    fprintf(stderr, "Example: ./stage1exe testcase.txt parsetreeOutFile.txt\n");
+    fprintf(stderr, "Usage Parse Tree: %s <source_file.txt> <parsetree_output.txt>\n", argv[0]);
+    fprintf(stderr, "Example: ./stage1exe parsetestcase.txt parsetreeOutFile.txt\n");
+    fprintf(stderr, "Usage Lexical: %s <source_file.txt>\n", argv[0]);
+    fprintf(stderr, "Example: ./stage1exe lexertestcase.txt\n");
     return 1;
   }
 
   char *sourceFile = argv[1];
-  char *parseTreeFile = argv[2];
+  char *parseTreeFile = NULL;
+  
+  if(argc>2){
+    parseTreeFile = argv[2];
+  }
 
   FILE *check = fopen(sourceFile, "r");
   if (!check)
